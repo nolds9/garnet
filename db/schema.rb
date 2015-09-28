@@ -28,14 +28,12 @@ ActiveRecord::Schema.define(version: 20150928194100) do
   create_table "observations", force: :cascade do |t|
     t.string   "status"
     t.text     "body"
-    t.datetime "created_date"
     t.integer  "membership_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
 
   create_table "submissions", force: :cascade do |t|
-    t.datetime "created_date"
     t.string   "status"
     t.text     "student_notes"
     t.text     "grader_notes"

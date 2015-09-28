@@ -3,7 +3,6 @@ class CreateObservations < ActiveRecord::Migration
     create_table :observations do |t|
       t.string :status
       t.text :body
-      t.datetime :created_date
       t.belongs_to :membership
 
       t.timestamps null: false
