@@ -1,0 +1,7 @@
+<h2>Sign up</h2>
+<%= form_tag("/sign_up", method: "post") do %>
+  <input type="text" name="username" placeholder="username" />
+  <input type="password" name="password" placeholder="password" />
+  <input type="password" name="password_confirmation" placeholder="password again" />
+  <input type="submit" value="Sign up" />
+<% end %>
