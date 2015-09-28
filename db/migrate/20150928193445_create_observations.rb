@@ -3,7 +3,8 @@ class CreateObservations < ActiveRecord::Migration
     create_table :observations do |t|
       t.string :status
       t.text :body
-      t.belongs_to :membership
+      t.belongs_to :observee, :class_name => "membership"
+      t.belongs_to :author, :class_name => "membership"
 
       t.timestamps null: false
     end

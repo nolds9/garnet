@@ -28,9 +28,10 @@ ActiveRecord::Schema.define(version: 20150928194100) do
   create_table "observations", force: :cascade do |t|
     t.string   "status"
     t.text     "body"
-    t.integer  "membership_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.integer  "observee_id"
+    t.integer  "author_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "submissions", force: :cascade do |t|
@@ -38,7 +39,8 @@ ActiveRecord::Schema.define(version: 20150928194100) do
     t.text     "student_notes"
     t.text     "grader_notes"
     t.integer  "assignment_id"
-    t.integer  "membership_id"
+    t.integer  "grader_id"
+    t.integer  "submitter_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
