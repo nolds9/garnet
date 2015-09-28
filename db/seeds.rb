@@ -5,3 +5,47 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+User.destroy_all
+Group.destroy_all
+Membership.destroy_all
+Observation.destroy_all
+
+WDI = Group.create(title: "WDI7")
+wdi = {
+  instructors: [],
+  students: []
+}
+
+instructors = [
+  ["robin", "thomas"],
+  ["andy", "kim"],
+  ["nick", "olds"],
+  ["erica", "irving"],
+  ["adam", "bray"],
+  ["matt", "scilipoti"],
+  ["jesse", "shawl"],
+  ["john", "master"],
+  ["adrian", "maseda"]
+]
+
+instructors.each do |instructor|
+  instructor = User.create!(username: instructor[0], password_digest: instructor[1])
+  membership = instructor.memberships.create(group_id: WDI.id, is_admin?: true)
+  wdi[:instructors].push(membership)
+end
+
+students = [
+  ["jane", "doe"],
+  ["joe", "smith"],
+  ["kareem", "abdul-jabaar"],
+  ["dikembe", "muotumbo"]
+]
+
+students.each do |student|
+  student = User.create!(username: student[0], password_digest: student[1])
+  membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
+  wdi[:students].push(membership)
+end
+
+# robin_in_wdi.authored_observations.create!(observee_id: nick_in_wdi.id, body: "Nick is cool. A+")
