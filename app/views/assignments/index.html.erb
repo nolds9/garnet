@@ -1,0 +1,57 @@
+<header class='cf'>
+  <nav>
+    <ul>
+      <!-- <li class="home">
+        <a href="/"><i class="icon icon-home"></i></a>
+      </li> -->
+      <li>
+        <%= link_to "Students", group_path(params[:group_id]) %>
+      </li>
+
+      <!-- <li class='login'>
+        <% if session[:token] %>
+          <%= link_to "Log out", '/logout' %>
+        <% else %>
+          <%#= link_to "Log in with GitHub", '/auth/github' %>
+        <% end %>
+      </li> -->
+    </ul>
+  </nav>
+
+</header>
+
+<%# if session[:token] %>
+
+<h1>Assignments</h1>
+<table class="tablesorter">
+  <thead>
+    <%= form_for [@group, @assignment] do |f| %>
+      <%= f.text_field :title, placeholder: "Title" %>
+      <%= f.select :category, [["homework","homework"],["outcomes","outcomes"],["project","project"]] %>
+      <%= f.text_field :repo_url, placeholder: "Repo Url"%>
+      <%= f.date_field :due_date %>
+      <%= f.submit %>
+    <% end %>
+    <tr>
+      <th>Title</th>
+      <th>Percent Complete</th>
+      <th>Type</th>
+      <th>Repo Url</th>
+      <th>Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @assignments.each do |assignment| %>
+      <tr>
+        <td><%= link_to "#{assignment.title}", group_assignment_path(@group, assignment) %></td>
+        <td><%#= "%#{assignment.completion_rate}" %></td>
+        <td><%= assignment.category %></td>
+        <td><%= link_to repo_name(assignment.repo_url), assignment.repo_url %></td>
+        <td><%= assignment.due_date %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%# end %>
+<script src="https://cdn.jsdelivr.net/tablesorter/2.17.4/js/jquery.tablesorter.min.js">
+</script>
