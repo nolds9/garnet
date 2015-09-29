@@ -16,5 +16,7 @@ Rails.application.routes.draw do
   get 'api/groups/:id/submission_summary', to: "groups_api#students_submissions"
 
   resources :groups
+  resources :events
+
 
 end
