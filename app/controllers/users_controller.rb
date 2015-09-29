@@ -13,6 +13,7 @@ class UsersController < ApplicationController
       session[:user] = user
       message = "Your account has been created!"
       sign_in!
+      return
     else
       message = "Your account couldn't be created. Did you enter a unique username and password?"
     end
