@@ -10,12 +10,14 @@ class UsersController < ApplicationController
     if params[:password_confirmation] != params[:password]
       message = "Your passwords don't match!"
     elsif user.save
+      session[:user] = user
       message = "Your account has been created!"
+      sign_in!
     else
       message = "Your account couldn't be created. Did you enter a unique username and password?"
     end
     flash[:notice] = message
-    sign_in!
+    sign_up
   end
 
   def sign_in
@@ -23,7 +25,7 @@ class UsersController < ApplicationController
 
   def sign_in!
     if session[:user]
-      @user = User.find_by(username: session[:user][:username])
+      @user = User.find(session[:user]["id"])
     else
       @user = User.find_by(username: params[:username])
     end
