@@ -2,13 +2,26 @@
 
 ## Local Setup
 
-    $ git clone https://github.com/ga-dc/garnet
-    $ cd garnet
-    $ bundle
-    $ rake db:create
-    $ rake db:migrate
-    $ rake db:seed
-    $ rails s
+```
+$ git clone https://github.com/ga-dc/garnet
+$ cd garnet
+$ bundle
+$ rake db:create
+$ rake db:migrate
+$ rake db:seed
+$ rails s
+```
+
+To include Github stuff:
+
+Register a Github application, and update `config/application.yml` to look like this:
+
+```
+gh_client_id: "12345"
+gh_client_secret: "67890"
+gh_redirect_url: "http://localhost:3000/github/authenticate"
+
+```
 
 ## User stories
 
