@@ -8,9 +8,10 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <h1 class='logo'><a href="/"><span>GA</span>rNET</a></h1>
-  <p><a href="https://github.com/ga-dc/garnet" target="_blank">ga-dc/garnet</a></p>
-  <%= render "users/auth_nav" %>
+  <div class='cf'>
+    <h1 class='logo'><a href="/"><span>GA</span>rNET</a> <a href="https://github.com/ga-dc/garnet" target="_blank"><i class="fa fa-code-fork"></i></a></h1>
+    <%= render "users/auth_nav" %>
+  </div>
 
 <%= yield %>
 

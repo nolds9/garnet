@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'pry'
+gem "font-awesome-rails"
 gem 'httparty'
 gem 'figaro'
 gem 'octokit'
