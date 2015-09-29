@@ -14,7 +14,7 @@ $ rails s
 
 To include Github stuff:
 
-Register a Github application, and update `config/application.yml` to look like this:
+[Register a Github application](https://github.com/settings/applications) and update `config/application.yml` to look like this:
 
 ```
 gh_client_id: "12345"
