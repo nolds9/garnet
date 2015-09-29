@@ -7,8 +7,12 @@ Rails.application.routes.draw do
   get '/sign_out', to: 'users#sign_out'
 
   # students submissions end-point
-  get 'memberships/:id/submissions', to: "submissions_api#index"
+  get 'api/memberships/:id/submissions', to: "submissions_api#index"
 
+  # groups api routes
+  get 'api/groups', to: "groups_api#index"
+  get 'api/groups/:id', to: "groups_api#groups_students"
+  
   resources :groups
 
 end
