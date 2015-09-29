@@ -28,7 +28,7 @@
       <p style="background: student.observations.status" class="<%#= student.squad %> <%#= student.category %>">
         <a href="/<%= student.github_id %>"><%= student.username %>
           <%#= "Absences: #{student.absences}" %><%#= "Tardies: #{student.tardies}" %><%#= "Total: #{student.combined_absence}" %><%#= "Percent: #{student.percent_complete}" %>
-          <p><%= @studentObservations %></p>
+          <p><%#= @studentObservations %></p>
           <% if student.updated_at %>
     	      <small><%= time_ago_in_words(student.updated_at) %> ago</small>
           <% end %>

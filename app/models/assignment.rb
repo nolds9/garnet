@@ -12,5 +12,13 @@ class Assignment < ActiveRecord::Base
     students.each do |student|
       student.submitted_submissions.create(assignment_id: self.id)
     end
+
   end
+
+  def summary_info
+   summary_items = [category]
+   summary_items << "due: #{due_date.strftime("%A, %B %e, %Y at %r")}" if due_date?
+   summary_items
+ end
+
 end

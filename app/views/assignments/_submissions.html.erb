@@ -1,0 +1,33 @@
+<%# issue = @issues[submission.student["github_user_id"]] %>
+<tr>
+  <th><%= link_to submission.student["name"], edit_assignment_submission_path(@assignment, submission)  %></th>
+  <% if is_an_instructor? %>
+    <td>
+      <%= link_to("Tracker", student_url(submission.student),  title: "To Student Tracker", target: '_blank') %>
+    </td>
+  <% end %>
+  <% if issue %>
+    <% issue_label = (issue[:state] == "open" ? "issue*" : "issue") %>
+    <td class=<%= issue[:state] %>><%= link_to issue_label, issue[:url]%></td>
+    <td><%= markdown(issue[:comments])%></td>
+  <% else %>
+    <% if submission.assignment.assignment_type == "homework" %>
+      <td class="missing">no issue!</td>
+    <% elsif !submission.repo_url.blank? %>
+      <td><%= link_to "View on GitHub", submission.repo_url %></td>
+    <% else %>
+      <td></td>
+    <% end %>
+    <td></td>
+  <% end %>
+  <td class="status">
+    <% if submission.assignment.assignment_type == "homework" %>
+      <%= check_box_tag submission.id, true, submission.status === "complete", :"data-submit" => assignment_submissions_path(@assignment) + "/#{submission.id}" %>
+      <label for="<%= submission.id %>">Complete</label>
+    <% elsif submission.assignment.assignment_type == "project" %>
+      <% if submission.status && !submission.status.blank? %>
+        Complete
+      <% end %>
+    <% end %>
+  </td>
+</tr>

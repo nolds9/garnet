@@ -70,5 +70,5 @@ wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:stude
 day_one = WDI.events.create(date: DateTime.new(2015, 10, 16))
 day_two = WDI.events.create(date: DateTime.new(2015, 10, 17))
 
-assignment = WDI.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart")
-assignment_two = WDI.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1")
+assignment = WDI.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
+assignment_two = WDI.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")

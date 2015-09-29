@@ -6,6 +6,10 @@ class AssignmentsController < ApplicationController
     @assignments = Assignment.where(group_id: @group.id)
   end
 
+  def show
+    @assignment = Assignment.find(params[:id])
+  end
+
   def create
     @group = Group.find(params[:group_id])
     @assignment = @group.assignments.new(assignment_params)
