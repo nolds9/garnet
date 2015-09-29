@@ -30,7 +30,8 @@ instructors = [
 ]
 
 instructors.each do |instructor|
-  instructor = User.create!(username: instructor[0], password_digest: instructor[1])
+  instructor = User.sign_up(instructor[0], instructor[1])
+  instructor.save
   membership = instructor.memberships.create(group_id: WDI.id, is_admin?: true)
   wdi[:instructors].push(membership)
 end
@@ -43,7 +44,8 @@ students = [
 ]
 
 students.each do |student|
-  student = User.create!(username: student[0], password_digest: student[1])
+  student = User.sign_up(student[0], student[1])
+  student.save
   membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
   wdi[:students].push(membership)
 end
