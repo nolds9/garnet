@@ -11,8 +11,9 @@ Rails.application.routes.draw do
 
   # groups api routes
   get 'api/groups', to: "groups_api#index"
-  get 'api/groups/:id', to: "groups_api#groups_students"
-  
+  get 'api/groups/:id', to: "groups_api#students"
+  get 'api/groups/:id/attendance_summary', to: "groups_api#students_attendances"
+
   resources :groups
 
 end
