@@ -1,6 +1,12 @@
 <nav>
   <% if session[:user] %>
-    <a href="/sign_out"><%= session[:user]["username"] %>: sign out</a></h2>
+    <a href="/sign_out"><%= @user.username %>: sign out</a>
+    <a href="/github/authorize">
+      <% if session[:user] %>
+        <img src="<%= @user.image_url %>" alt="<%= @user.github_username %>" width="75" height="75" title="Refresh your Github info" />
+      <% else %>
+        "Authorize Github"
+      <% end %>
   <% else %>
     <a href="/sign_up">Sign up</a>
     <a href="/sign_in">Sign in</a>

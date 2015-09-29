@@ -47,4 +47,27 @@ class UsersController < ApplicationController
     redirect_to root_url
   end
 
+  def gh_authorize
+    redirect_to Github.new(ENV).oauth_link
+  end
+
+  def gh_authenticate
+    github_instance = Github.new(ENV)
+    github_instance.user_code = params[:code]
+    session[:access_token] = github_instance.get_access_token
+    refresh_github_info
+  end
+
+  def refresh_github_info
+    gh_user = Github.new(ENV, session[:access_token]).api.user
+    @user = User.find(session[:user]["id"])
+    @user.update({
+      github_id: gh_user["id"],
+      github_username: gh_user["login"],
+      image_url: gh_user["avatar_url"]
+    })
+    session[:user] = @user
+    redirect_to :root
+  end
+
 end

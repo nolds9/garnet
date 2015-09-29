@@ -5,9 +5,12 @@ class ApplicationController < ActionController::Base
   before_action :authenticate
 
   private
-  def authenticate
-    if !session[:user]
-      redirect_to "/sign_in"
+    def authenticate
+      if !session[:user]
+        redirect_to "/sign_in"
+      elsif !@user
+        @user = User.find(session[:user]["id"])
+      end
     end
-  end
+
 end
