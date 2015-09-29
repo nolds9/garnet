@@ -46,8 +46,17 @@ body{
 
 nav{
   float:right;
+  a,img{
+    display:inline-block;
+  }
+  img{
+    display:inline-block;
+    height:35px;
+    width:35px;
+  }
 }
 
 .errareHumanumEst{
   color:red;
 }
+
