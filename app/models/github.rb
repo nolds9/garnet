@@ -3,9 +3,17 @@ class Github
   Octokit.auto_paginate = true
   attr_accessor :user_code
 
-  def initialize env, token = nil
+  def initialize env = nil, token = nil
     @env = env
     @token = token
+  end
+
+  def api
+    if @token
+      return Octokit::Client.new(access_token: @token)
+    else
+      return Octokit::Client.new(client_id: @env["gh_client_id"], client_secret: @env["gh_client_secret"])
+    end
   end
 
   def oauth_link
@@ -28,14 +36,6 @@ class Github
       }
     ).split("&")[0].split("=")[1]
     return @token
-  end
-
-  def api
-    if @token
-      return Octokit::Client.new(access_token: @token)
-    else
-      return Octokit::Client.new(client_id: @env["gh_client_id"], client_secret: @env["gh_client_secret"])
-    end
   end
 
 end

@@ -1,0 +1,8 @@
+<h2><%= @event.date %></h2>
+<p>
+  <% @students.each do |student| %>
+    <p>
+      <%= student.user.username %>
+    </p>
+  <% end %>
+</p>

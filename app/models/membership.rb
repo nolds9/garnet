@@ -23,18 +23,41 @@ class Membership < ActiveRecord::Base
   end
 
   def get_submission_summary
+    # summary = {
+    #   membership_id: self.id,
+    #   incompletes: 0,
+    #   missings: 0,
+    #   completes: 0
+    # }
+    # self.submitted_submissions.each do |submission|
+    #   if submission.assignment.category != "project"
+    #     binding.pry
+    #     if submission.status == "incomplete"
+    #       summary[:incompletes] += 1
+    #     elsif submission.status == "complete"
+    #       summary[:completes] += 1
+    #     elsif submission.status == "missing"
+    #       summary[:missings] += 1
+    #     end
+    #   end
+    # end
+    #
+    # return summary
+
+    # TODO need a way to filter out projects
     submissions = self.submitted_submissions
 
     incompletes = submissions.where(status: "incomplete").length
     missings = submissions.where(status: "missing").length
     completes = submissions.where(status: "complete").length
 
-    return {
+    return summary = {
       membership_id: self.id,
       incompletes: incompletes,
       missings: missings,
       completes: completes
     }
+
   end
 
 end

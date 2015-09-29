@@ -21,4 +21,6 @@ Rails.application.routes.draw do
   resources :groups do
     resources :assignments
   end
+  resources :events
+  
 end
