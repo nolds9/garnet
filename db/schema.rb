@@ -27,17 +27,17 @@ ActiveRecord::Schema.define(version: 20150928194100) do
 
   create_table "attendances", force: :cascade do |t|
     t.string   "status"
-    t.integer  "event_id"
-    t.integer  "membership_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.integer  "event_id_id"
+    t.integer  "membership_id_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "events", force: :cascade do |t|
     t.datetime "date"
-    t.integer  "group_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "group_id_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "groups", force: :cascade do |t|
@@ -48,20 +48,19 @@ ActiveRecord::Schema.define(version: 20150928194100) do
   end
 
   create_table "memberships", force: :cascade do |t|
-    t.integer  "group_id"
-    t.integer  "user_id"
+    t.integer  "group_id_id"
+    t.integer  "user_id_id"
     t.boolean  "is_admin?"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "observations", force: :cascade do |t|
     t.string   "status"
     t.text     "body"
-    t.integer  "observee_id"
-    t.integer  "author_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "membership_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "submissions", force: :cascade do |t|
