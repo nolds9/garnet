@@ -13,8 +13,8 @@ Observation.destroy_all
 
 WDI = Group.create(title: "WDI7")
 wdi = {
-  instructors: [],
-  students: []
+  instructors: {},
+  students: {}
 }
 
 instructors = [
@@ -30,9 +30,10 @@ instructors = [
 ]
 
 instructors.each do |instructor|
-  instructor = User.create!(username: instructor[0], password_digest: instructor[1])
+  instructor = User.sign_up(instructor[0], instructor[1])
+  instructor.save
   membership = instructor.memberships.create(group_id: WDI.id, is_admin?: true)
-  wdi[:instructors].push(membership)
+  wdi[:instructors][instructor.username] = membership
 end
 
 students = [
@@ -43,9 +44,10 @@ students = [
 ]
 
 students.each do |student|
-  student = User.create!(username: student[0], password_digest: student[1])
+  student = User.sign_up(student[0], student[1])
+  student.save
   membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
-  wdi[:students].push(membership)
+  wdi[:students][student.username] = membership
 end
 
-# robin_in_wdi.authored_observations.create!(observee_id: nick_in_wdi.id, body: "Nick is cool. A+")
+wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:students]["jane"].id, body: "Jane is cool. A+")

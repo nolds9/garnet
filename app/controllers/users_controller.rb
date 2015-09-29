@@ -6,10 +6,7 @@ class UsersController < ApplicationController
   end
 
   def sign_up!
-    user = User.new(
-      username: params[:username],
-      password_digest: params[:password]
-    )
+    user = User.sign_up(params[:username], params[:password])
     if params[:password_confirmation] != params[:password]
       message = "Your passwords don't match!"
     elsif user.save
@@ -18,7 +15,7 @@ class UsersController < ApplicationController
       message = "Your account couldn't be created. Did you enter a unique username and password?"
     end
     flash[:notice] = message
-    redirect_to action: :sign_in!
+    sign_in!
   end
 
   def sign_in
@@ -32,7 +29,7 @@ class UsersController < ApplicationController
     end
     if !@user
       message = "This user doesn't exist!"
-    elsif @user.password_digest != params[:password]
+    elsif !@user.sign_in(params[:password])
       message = "Your password's wrong!"
     else
       cookies[:username] = @user.username

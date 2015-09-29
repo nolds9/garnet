@@ -9,4 +9,6 @@ Rails.application.routes.draw do
   # students submissions end-point
   get 'memberships/:id/submissions', to: "submissions_api#index"
 
+  resources :groups
+
 end
