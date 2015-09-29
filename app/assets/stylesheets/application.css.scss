@@ -12,6 +12,7 @@
  *
  *= require_tree .
  *= require_self
+ *= require font-awesome
  */
 
 html{
@@ -33,7 +34,7 @@ body{
 .logo{
   margin-top: 0;
   font-family:'Oswald';
-
+  float:left;
   a{
     text-decoration: none;
     color: inherit;
@@ -42,6 +43,11 @@ body{
     color: red;
   }
 }
+
+nav{
+  float:right;
+}
+
 .errareHumanumEst{
   color:red;
 }
