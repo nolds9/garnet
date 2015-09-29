@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>Garnet</title>
+  <link href='https://fonts.googleapis.com/css?family=Oswald:400,700|Merriweather:400,700,300' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <h1><a href="/"><span style="color:red;">GA</span>rNET</a></h1>
+  <h1 class='logo'><a href="/"><span>GA</span>rNET</a></h1>
   <%= render "users/auth_nav" %>
 
 <%= yield %>

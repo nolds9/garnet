@@ -13,3 +13,34 @@
  *= require_tree .
  *= require_self
  */
+
+html{
+  background: #eee;
+  padding:2em;
+}
+
+body{
+  max-width: 60em;
+  margin:auto;
+  font-family: 'Merriweather', Georgia, serif;
+  background: #fff;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding:2em;
+  box-shadow:5px 5px 0 #ccc;
+}
+
+.logo{
+  margin-top: 0;
+  font-family:'Oswald';
+
+  a{
+    text-decoration: none;
+    color: inherit;
+  }
+  span{
+    color: red;
+  }
+}
+
+
