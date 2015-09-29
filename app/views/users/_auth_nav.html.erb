@@ -13,4 +13,8 @@
     <a href="/sign_in">Sign in</a>
   <% end %>
 </nav>
-<h2><%= flash[:notice] %></h2>
+<div class="errareHumanumEst">
+<% flash.each do |key, value| %>
+  <p><%= value %></p>
+<% end %>
+</div>

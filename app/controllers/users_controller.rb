@@ -17,7 +17,7 @@ class UsersController < ApplicationController
       message = "Your account couldn't be created. Did you enter a unique username and password?"
     end
     flash[:notice] = message
-    sign_up
+    redirect_to :sign_up
   end
 
   def sign_in
@@ -62,13 +62,17 @@ class UsersController < ApplicationController
 
   def refresh_github_info
     gh_user = Github.new(ENV, session[:access_token]).api.user
-    @user = User.find(session[:user]["id"])
-    @user.update({
-      github_id: gh_user["id"],
-      github_username: gh_user["login"],
-      image_url: gh_user["avatar_url"]
-    })
-    session[:user] = @user
+    if User.find_by(github_id: gh_user["id"])
+      flash[:alert] = "Another user has already linked to that Github account."
+    else
+      @user = User.find(session[:user]["id"])
+      @user.update({
+        github_id: gh_user["id"],
+        github_username: gh_user["login"],
+        image_url: gh_user["avatar_url"]
+      })
+      session[:user] = @user
+    end
     redirect_to :root
   end
 
