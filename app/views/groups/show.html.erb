@@ -1,7 +1,7 @@
 <a href='#' class='toggle-grayscale js-toggle-grayscale'>&#9728;</a>
 
 <header>
-  <small>Logged in as <%= @user.username %>
+  <small>Logged in as <%= current_user.username %>
   | <%= link_to "Recent", "/recent" %>
   | <%= link_to "Stats", "/stats" %>
   </small>
@@ -12,27 +12,31 @@
     <% end %>
   </h1>
   <select class="cohort-select">
-    <% @groups.each do |group| %>
-      <option value="<%=group.id%>" <%if group.id == @group.id%> selected <%end%>>
-        <%= group.title %>
-      </option>
+    <% if @groups %>
+      <% @groups.each do |group| %>
+        <option value="<%=group.id%>" <%if group.id == @group.id%> selected <%end%>>
+          <%= group.title %>
+        </option>
+      <% end %>
     <% end %>
   </select>
 </header>
 <!-- Something about squads -->
 <div class='student-list js-student-list'>
-  <% @students.each do |student| %>
-    <p style="background: student.observations.status" class="<%#= student.squad %> <%#= student.category %>">
-      <a href="/<%= student.github_id %>"><%= student.username %>
-        <%#= "Absences: #{student.absences}" %><%#= "Tardies: #{student.tardies}" %><%#= "Total: #{student.combined_absence}" %><%#= "Percent: #{student.percent_complete}" %>
-        <p><%= @studentObservations %></p>
-        <% if student.updated_at %>
-  	      <small><%= time_ago_in_words(student.updated_at) %> ago</small>
-        <% end %>
-      </a>
-      <%# gh_img = student.color ? "GitHub-Mark-Light-32px" : "GitHub-Mark-32px" %>
-      <%#= link_to(image_tag(gh_img, alt: "GH Repos", title: "GH Repos"), student.github_repo_url) %>
-    </p>
+  <% if @students %>
+    <% @students.each do |student| %>
+      <p style="background: student.observations.status" class="<%#= student.squad %> <%#= student.category %>">
+        <a href="/<%= student.github_id %>"><%= student.username %>
+          <%#= "Absences: #{student.absences}" %><%#= "Tardies: #{student.tardies}" %><%#= "Total: #{student.combined_absence}" %><%#= "Percent: #{student.percent_complete}" %>
+          <p><%= @studentObservations %></p>
+          <% if student.updated_at %>
+    	      <small><%= time_ago_in_words(student.updated_at) %> ago</small>
+          <% end %>
+        </a>
+        <%# gh_img = student.color ? "GitHub-Mark-Light-32px" : "GitHub-Mark-32px" %>
+        <%#= link_to(image_tag(gh_img, alt: "GH Repos", title: "GH Repos"), student.github_repo_url) %>
+      </p>
+    <% end %>
   <% end %>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js" charset="utf-8">
