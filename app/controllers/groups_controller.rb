@@ -7,6 +7,20 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.find(params[:id])
+    @user = User.find_by(username: session[:user]["username"])
+
+    @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
+    student_id_array = @student_memberships.map(&:user_id)
+    @students = student_id_array.map do |id|
+      User.find(id)
+    end
+
+    @instructor_memberships = @user.memberships
+    group_id_array = @instructor_memberships.map(&:group_id)
+    @groups = group_id_array.map do |id|
+      Group.find(id)
+    end
+
     render "show"
   end
 
