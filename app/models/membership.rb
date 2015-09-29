@@ -21,4 +21,20 @@ class Membership < ActiveRecord::Base
       absents: absents
     }
   end
+
+  def get_submission_summary
+    submissions = self.submitted_submissions
+
+    incompletes = submissions.where(status: "incomplete").length
+    missings = submissions.where(status: "missing").length
+    completes = submissions.where(status: "complete").length
+
+    return {
+      membership_id: self.id,
+      incompletes: incompletes,
+      missings: missings,
+      completes: completes
+    }
+  end
+
 end

@@ -22,4 +22,14 @@ class GroupsApiController < ApplicationController
     render json: summary
   end
 
+  def students_submissions
+    group = Group.find(params[:id])
+    students = group.memberships.where(is_admin?: false)
+
+    summary = students.map do |student|
+      student.get_submission_summary
+    end
+    render json: summary
+  end
+
 end
