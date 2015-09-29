@@ -18,5 +18,7 @@ Rails.application.routes.draw do
   get "github/authorize", to: "users#gh_authorize"
   get "github/authenticate", to: "users#gh_authenticate"
 
-  resources :groups
+  resources :groups do
+    resources :assignments
+  end
 end
