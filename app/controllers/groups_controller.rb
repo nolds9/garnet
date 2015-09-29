@@ -16,16 +16,15 @@ class GroupsController < ApplicationController
     @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
     student_id_array = @student_memberships.map(&:user_id)
     @students = student_id_array.map do |id|
-      return User.find(id)
+      User.find(id)
     end
 
     @instructor_memberships = current_user.memberships
     puts current_user.memberships
     group_id_array = @instructor_memberships.map(&:group_id)
     @groups = group_id_array.map do |id|
-      return Group.find(id)
+      Group.find(id)
     end
-    puts
 
     render "show"
   end
