@@ -19,6 +19,12 @@ wdi = {
   students: {}
 }
 
+WDI8 = Group.create(title: "WDI8")
+wdi8 = {
+  instructors: {},
+  students: {}
+}
+
 instructors = [
   ["robin", "thomas"],
   ["andy", "kim"],
@@ -36,6 +42,8 @@ instructors.each do |instructor|
   instructor.save
   membership = instructor.memberships.create(group_id: WDI.id, is_admin?: true)
   wdi[:instructors][instructor.username] = membership
+  membership8 = instructor.memberships.create(group_id: WDI8.id, is_admin?: true)
+  wdi8[:instructors][instructor.username] = membership8
 end
 
 students = [
@@ -50,6 +58,19 @@ students.each do |student|
   student.save
   membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
   wdi[:students][student.username] = membership
+end
+
+students8 = [
+  ["big", "bird"],
+  ["oscar", "grouch"],
+  ["cookie", "monster"]
+]
+
+students8.each do |student|
+  student = User.sign_up(student[0], student[1])
+  student.save
+  membership = student.memberships.create(group_id: WDI8.id, is_admin?: false)
+  wdi8[:students][student.username] = membership
 end
 
 wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:students]["jane"].id, body: "Jane is cool. A+")
