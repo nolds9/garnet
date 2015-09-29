@@ -50,4 +50,4 @@ students.each do |student|
   wdi[:students][student.username] = membership
 end
 
-wdi[:instructors]["robin"].authored_observations.create!(observee_id: nick_in_wdi.id, body: "Nick is cool. A+")
+wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:students]["jane"].id, body: "Jane is cool. A+")
