@@ -19,4 +19,5 @@ Rails.application.routes.draw do
   get "github/authenticate", to: "users#gh_authenticate"
 
   resources :groups
+  resources :events
 end

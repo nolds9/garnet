@@ -10,6 +10,8 @@ User.destroy_all
 Group.destroy_all
 Membership.destroy_all
 Observation.destroy_all
+Event.destroy_all
+Assignment.destroy_all
 
 WDI = Group.create(title: "WDI7")
 wdi = {
@@ -72,3 +74,9 @@ students8.each do |student|
 end
 
 wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:students]["jane"].id, body: "Jane is cool. A+")
+
+day_one = WDI.events.create(date: DateTime.new(2015, 10, 16))
+day_two = WDI.events.create(date: DateTime.new(2015, 10, 17))
+
+assignment = WDI.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart")
+assignment_two = WDI.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1")
