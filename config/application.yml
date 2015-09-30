@@ -1,3 +1,0 @@
-gh_client_id: "44df26af133fd96625ef"
-gh_client_secret: "93c58202ec7f0b8deff5def09655fe2dc9801cd4"
-gh_redirect_url: "http://localhost:3000/github/authenticate"
