@@ -20,6 +20,10 @@ $ rails s
 
 ### Setup
 
+```
+bundle exec figaro install
+```
+
 [Register a Github application](https://github.com/settings/applications) and update `config/application.yml` to look like this:
 
 ```
