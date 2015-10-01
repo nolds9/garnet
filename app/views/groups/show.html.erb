@@ -1,5 +1,9 @@
-<a href='#' class='toggle-grayscale js-toggle-grayscale'>&#9728;</a>
-
+<nav>
+  <%= form_for [@group, @event] do |f| %>
+    <%= f.submit :"Take today's attendance." %>
+  <% end %>
+</nav>
+<h2><%= link_to "Assignments", group_assignments_path(@group) %> </h2>
 <header>
   <small>Logged in as <%= current_user.username %>
   | <%= link_to "Recent", "/recent" %>

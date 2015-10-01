@@ -3,6 +3,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :group
 
   after_create :create_submissions
+  after_initialize :set_due_date
 
   def create_submissions
     group = Group.find(self.group_id)
@@ -13,6 +14,10 @@ class Assignment < ActiveRecord::Base
       student.submitted_submissions.create(assignment_id: self.id, status: "incomplete")
     end
 
+  end
+
+  def set_due_date
+    self.due_date ||= Time.now
   end
 
   def summary_info

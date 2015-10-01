@@ -1,18 +1,25 @@
-var updateAttendance = function(){
-  console.log("clicked");
-  data = {attendance: {}};
-  data.attendance.status = $(this).val();
-  data.attendance_id = $(this).parent().parent().find('#attendance_id').val();
-
-  console.log(data);
-
-    $.ajax({
-      url: "/update_attendance",
-      dataType: "json",
-      type: "patch",
-      data: data
-    }).then(function(response){
-      console.log(response);
-    });
-
+var updateAttendance = function(form){
+  var url = form.attr("action")
+  var data = form.serialize()
+  var status = form.find(":checked").val()
+  var token = form.find("[name='authenticity_token']").val()
+  $.ajax({
+    url: url,
+    dataType: "json",
+    method: "PATCH",
+    data: {
+      attendance: {
+        status: status
+      },
+      authenticity_token: token
+    }
+  })
 };
+
+$(function(){
+  $("body").on("change", ".attendance form", function(e){
+    e.preventDefault()
+    e.stopPropagation()
+    updateAttendance($(this))
+  })
+})
