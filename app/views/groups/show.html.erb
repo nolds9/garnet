@@ -1,9 +1,8 @@
-
-    <nav>
-      <%= form_for [@group, @event] do |f| %>
-	<%= f.submit :"Take today's attendance." %>
-      <% end %>
-    </nav>
+<nav>
+  <%= form_for [@group, @event] do |f| %>
+    <%= f.submit :"Take today's attendance." %>
+  <% end %>
+</nav>
 <header>
   <small>Logged in as <%= current_user.username %>
   | <%= link_to "Recent", "/recent" %>
