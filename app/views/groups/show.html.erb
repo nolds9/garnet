@@ -1,7 +1,6 @@
 
     <nav>
       <%= form_for [@group, @event] do |f| %>
-	<%= f.hidden_field :date, value: Time.now.at_beginning_of_day %>
 	<%= f.submit :"Take today's attendance." %>
       <% end %>
     </nav>

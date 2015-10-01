@@ -3,7 +3,7 @@ class EventsController < ApplicationController
     @events = Event.all
   end
   def create
-    @event = Event.new event_params.merge(group_id: params[:group_id])
+    @event = Event.find_or_initialize_by(date: Time.now.at_beginning_of_day, group_id: params[:group_id])
     if @event.save
       redirect_to group_event_path(params[:group_id], @event)
     else
@@ -22,9 +22,4 @@ class EventsController < ApplicationController
     # @students = group.memberships.where(is_admin?: false).joins(:user).order('users.username')
   end
 
-  private
-  
-  def event_params
-    params.require(:event).permit(:date)
-  end
 end
