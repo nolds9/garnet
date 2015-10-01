@@ -1,6 +1,6 @@
 <h2>Observations</h2>
 <div class='student-list js-student-list'>
-  <% @students.each do |student| %>
-    <h3><%= link_to student.username, group_student_observations_path(@group, student) %></h3>
+  <% @student_memberships.each do |student| %>
+    <h3><%= link_to student.user.username, group_student_observations_path(@group, student) %></h3>
   <% end %>
 </div>
