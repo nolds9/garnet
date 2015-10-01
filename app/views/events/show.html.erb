@@ -1,7 +1,7 @@
 <h2><%= @event.date %></h2>
 <div class="students">
   <% @attendances.each do |attendance| %>
-    <div class="student">
+    <div class="student attendance">
       <h3><%= attendance.membership.user.username %></h3>
       <%= form_for [@group, @event, attendance] do |f| %>
         <label>
