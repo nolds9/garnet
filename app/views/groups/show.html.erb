@@ -1,5 +1,10 @@
-<a href='#' class='toggle-grayscale js-toggle-grayscale'>&#9728;</a>
 
+    <nav>
+      <%= form_for [@group, @event] do |f| %>
+	<%= f.hidden_field :date, value: Time.now.at_beginning_of_day %>
+	<%= f.submit :"Take today's attendance." %>
+      <% end %>
+    </nav>
 <header>
   <small>Logged in as <%= current_user.username %>
   | <%= link_to "Recent", "/recent" %>

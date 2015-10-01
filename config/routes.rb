@@ -20,8 +20,8 @@ Rails.application.routes.draw do
 
   patch 'update_attendance', to: "attendances_api#update"
 
-  resources :events
   resources :groups do
+    resources :events
     resources :assignments
   end
 

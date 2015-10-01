@@ -12,6 +12,7 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.find(params[:id])
+    @event = Event.new
     # TODO:Exract these into helper methods for use throughout the application
     @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
     student_id_array = @student_memberships.map(&:user_id)
