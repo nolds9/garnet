@@ -27,7 +27,9 @@ Rails.application.routes.draw do
     resources :events do
       resources :attendances
     end
-    resources :assignments
+    resources :assignments do
+      resources :submissions
+    end
   end
 
 end
