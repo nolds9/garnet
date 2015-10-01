@@ -29,7 +29,9 @@ Rails.application.routes.draw do
     resources :assignments do
       resources :submissions
     end
-    resources :observations
+    resources :students do
+      resources :observations
+    end
   end
 
 end
