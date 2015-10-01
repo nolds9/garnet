@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     resources :assignments do
       resources :submissions
     end
+    resources :observations
   end
 
 end

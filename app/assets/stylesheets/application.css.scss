@@ -60,3 +60,14 @@ nav{
   color:red;
 }
 
+.dashboard {
+  h2{}
+  input[type="submit"]{
+    background: none;
+    border:none;
+    font:inherit;
+    text-decoration:underline;
+    cursor: pointer;
+    padding:0;
+  }
+}
