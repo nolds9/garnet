@@ -4,12 +4,18 @@
     <div class="student">
       <h3><%= attendance.membership.user.username %></h3>
       <%= form_for [@group, @event, attendance] do |f| %>
-        <%= f.label :status_present, "Present" %>
-        <%= f.radio_button :status, "Present" %>
-        <%= f.label :status_tardy, "Tardy" %>
-        <%= f.radio_button :status, "Tardy" %>
-        <%= f.label :status_absent, "Absent" %>
-        <%= f.radio_button :status, "Absent" %>
+        <label>
+	  Present
+	  <%= f.radio_button :status, "Present" %>
+	</label>
+        <label>
+	  Tardy
+	  <%= f.radio_button :status, "Tardy" %>
+	</label>
+        <label>
+	  Absent
+	  <%= f.radio_button :status, "Absent" %>
+	</label>
         <%= f.submit :submit %>
       <% end %>
     </div>
