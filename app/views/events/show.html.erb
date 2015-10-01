@@ -3,35 +3,15 @@
   <% @attendances.each do |attendance| %>
     <div class="student">
       <h3><%= attendance.membership.user.username %></h3>
-      <form class="entry" method="post" class="student">
-        <input type="hidden" value="<%= attendance.id %>" id="attendance_id">
-        <div class='status'>
-          <% if attendance.status == "present" %>
-            <input type="radio" name="status" value="present" checked=true>
-            Present
-          <% else %>
-            <input type="radio" name="status" value="present">
-            Present
-          <% end %>
-
-          <% if attendance.status == "tardy" %>
-            <input type="radio" name="status" value="tardy" checked=true>
-            Tardy
-          <% else %>
-            <input type="radio" name="status" value="tardy">
-            Tardy
-          <% end %>
-
-          <% if attendance.status == "absent" %>
-            <input type="radio" name="status" value="absent" checked=true>
-            Absent
-          <% else %>
-            <input type="radio" name="status" value="absent">
-            Absent
-          <% end %>
-          
-        </div>
-      </form>
+      <%= form_for [@group, @event, attendance] do |f| %>
+        <%= f.label :status_present, "Present" %>
+        <%= f.radio_button :status, "Present" %>
+        <%= f.label :status_tardy, "Tardy" %>
+        <%= f.radio_button :status, "Tardy" %>
+        <%= f.label :status_absent, "Absent" %>
+        <%= f.radio_button :status, "Absent" %>
+        <%= f.submit :submit %>
+      <% end %>
     </div>
   <% end %>
 </div>

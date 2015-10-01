@@ -14,6 +14,7 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find(params[:id])
+    @group = Group.find(params[:group_id])
     @attendances =  @event.attendances.sort_by do |attendance|
       attendance.membership.user.username
     end
