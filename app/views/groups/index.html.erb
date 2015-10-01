@@ -1,13 +1,14 @@
 <h2>Groups</h2>
-
-<h3>Administrator Of</h3>
-<ul>
-<% @admin_groups.each do |group| %>
-  <li><%= link_to group.title, group %></li>
+<% if @admin_group %>
+  <h3>Administrator Of</h3>
+  <ul>
+  <% @admin_groups.each do |group| %>
+    <li><%= link_to group.title, group %></li>
+  <% end %>
+  </ul>
 <% end %>
-</ul>
 
-<h3>Not Administrator Of</h3>
+<h3>My Groups</h3>
 <ul>
 <% @non_admin_groups.each do |group| %>
   <li><%= link_to group.title,  "report_card/#{group.id}"%></li>
