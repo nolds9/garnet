@@ -1,13 +1,25 @@
 class GroupsController < ApplicationController
-
+  before_action :check_for_single_group, only: [:index]
   def index
-    category = params[:category]
-    if category
-      @groups = Group.find_by(category: category)
-    else
-      @groups = Group.all
-    end
+    @memberships = current_user.memberships
+    @admin_memberships = @memberships.where(is_admin?: true)
+    @non_admin_memberships = @memberships.where(is_admin?: false)
+    @admin_groups = @admin_memberships.map{|membership| membership.group}
+    @non_admin_groups = @non_admin_memberships.map{|membership| membership.group}
     render "index"
+  end
+
+  def report_card
+    membership = Membership.find_by(group_id: params[:id], user_id: current_user.id)
+    @attendance_summary = membership.get_attendance_summary
+    @attendances = Attendance.where(membership_id: membership.id)
+    @tardies = @attendances.where(status: "tardy")
+    @absences = @attendances.where(status: "absent")
+
+    @submission_summary = membership.get_submission_summary
+    @missing_submissions = Submission.where(submitter_id: membership.id, status: "incomplete")
+    @missing_assignments = @missing_submissions.map{|submission| submission.assignment }
+
   end
 
   def show
@@ -71,6 +83,12 @@ class GroupsController < ApplicationController
   private
     def group_params
       params.require(:group).permit(:title, :category)
+    end
+
+    def check_for_single_group
+      if current_user.groups.length == 1
+        redirect_to action: 'report_card', id: current_user.groups[0].id
+      end
     end
 
 end

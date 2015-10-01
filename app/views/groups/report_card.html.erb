@@ -1,0 +1,48 @@
+<h2>Student Status</h2>
+
+<h3>Attendance</h3>
+<p>More than 4 absences or 8 tardies(2 tardies counts as 1 absence)<a href="#">Read More</a></p>
+<div>
+<p>tardies: <%= @attendance_summary[:tardys] %></p>
+<p>absences: <%= @attendance_summary[:absents] %></p>
+<p>total: <%= @attendance_summary[:tardys].to_f / 2.0 + @attendance_summary[:absents] %></p>
+</div>
+<h4>Tardies</h4>
+<ul>
+  <% @tardies.each do |tardy| %>
+    <li><%= tardy.event.date %></li>
+    <% end %>
+</ul>
+<h4>Absences</h4>
+<ul>
+  <% @absences.each do |absence| %>
+    <li><%= absence.event.date %></li>
+    <% end %>
+</ul>
+<h3>Assignments</h3>
+<h4>Missing Assignments</h4>
+<ul>
+  <% @missing_assignments.each do |assignment| %>
+    <li>
+      <p><%= assignment.title %></p>
+      <p>Category: <%= assignment.category %></p>
+      <p>Due Date: <%= assignment.due_date %></p>
+
+    </li>
+    <% end %>
+</ul>
+<h3>Project Feedback</h3>
+
+
+<!-- attendance summary
+membership_id: self.id,
+tardys: tardys,
+presents: presents,
+absents: absents
+    submission_summary
+
+    membership_id: self.id,
+    incompletes: incompletes,
+    missings: missings,
+    completes: completes
+ -->

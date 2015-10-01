@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  skip_before_action :authenticate
+  skip_before_action :authenticate, except: [:show]
 
   def sign_up
   end
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
       message = "You're signed in, #{@user.username}!"
     end
     flash[:notice] = message
-    redirect_to root_url
+    redirect_to groups_path
   end
 
   def sign_out

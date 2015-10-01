@@ -73,3 +73,22 @@ day_two = WDI.events.create(date: DateTime.new(2015, 10, 17))
 
 assignment = WDI.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
 assignment_two = WDI.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
+
+# test student
+jane = User.find_by(username: "jane")
+jane = jane.memberships[0]
+jane.submitted_submissions.each_with_index do |submission, i|
+  if i % 2 == 0
+    submission.status = "complete"
+    submission.save
+  end
+end
+
+jane.attendances.each_with_index do |attendance, i|
+  if i % 2 == 0
+    attendance.status = "absent"
+  else
+    attendance.status = "present"
+  end
+  attendance.save
+end

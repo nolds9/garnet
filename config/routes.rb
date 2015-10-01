@@ -18,6 +18,11 @@ Rails.application.routes.draw do
   get "github/authorize", to: "users#gh_authorize"
   get "github/authenticate", to: "users#gh_authenticate"
 
+  patch 'update_attendance', to: "attendances_api#update"
+
+  get "/report_card", to: 'groups#report_card'
+
+  resources :users, only: [:show]
   resources :groups do
     resources :events do
       resources :attendances
