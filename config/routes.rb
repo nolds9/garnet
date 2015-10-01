@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   patch 'update_attendance', to: "attendances_api#update"
 
-  get "/report_card", to: 'groups#report_card'
+  get "/report_card/:id", to: 'groups#report_card'
 
   resources :groups do
     resources :events do

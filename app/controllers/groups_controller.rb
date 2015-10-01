@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :check_for_single_group, only: [:index]
+  # before_action :check_for_single_group, only: [:index]
   def index
     @memberships = current_user.memberships
     @admin_memberships = @memberships.where(is_admin?: true)
