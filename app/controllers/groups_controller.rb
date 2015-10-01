@@ -17,7 +17,8 @@ class GroupsController < ApplicationController
     @absences = @attendances.where(status: "absent")
 
     @submission_summary = membership.get_submission_summary
-    @missing_submissions = Submission.where(submitter_id: membership.id)
+    @missing_submissions = Submission.where(submitter_id: membership.id, status: "incomplete")
+    @missing_assignments = @missing_submissions.map{|submission| submission.assignment }
 
   end
 

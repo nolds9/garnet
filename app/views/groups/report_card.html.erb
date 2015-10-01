@@ -21,7 +21,16 @@
 </ul>
 <h3>Assignments</h3>
 <h4>Missing Assignments</h4>
+<ul>
+  <% @missing_assignments.each do |assignment| %>
+    <li>
+      <p><%= assignment.title %></p>
+      <p>Category: <%= assignment.category %></p>
+      <p>Due Date: <%= assignment.due_date %></p>
 
+    </li>
+    <% end %>
+</ul>
 <h3>Project Feedback</h3>
 
 
