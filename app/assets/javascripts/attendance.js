@@ -1,14 +1,18 @@
 var updateAttendance = function(form){
   var url = form.attr("action")
-  console.log(url)
-  
+  var data = form.serialize()
+  var status = form.find(":checked").val()
+  var token = form.find("[name='authenticity_token']").val()
   $.ajax({
     url: url,
     dataType: "json",
     method: "PATCH",
-    data: form.serialize()
-  }).then(function(res){
-    console.log(res) 
+    data: {
+      attendance: {
+        status: status
+      },
+      authenticity_token: token
+    }
   })
 };
 
