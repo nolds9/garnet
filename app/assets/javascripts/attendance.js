@@ -1,18 +1,26 @@
 var updateAttendance = function(){
-  console.log("clicked");
-  data = {attendance: {}};
-  data.attendance.status = $(this).val();
-  data.attendance_id = $(this).parent().parent().find('#attendance_id').val();
+//  data = {attendance: {}};
+//  data.attendance.status = $(this).val();
+//  data.attendance_id = $(this).parent().parent().find('#attendance_id').val();
+//
+//  console.log(data);
+//
+//    $.ajax({
+//      url: "/update_attendance",
+//      dataType: "json",
+//      type: "patch",
+//      data: data
+//    }).then(function(response){
+//      console.log(response);
+//    });
+  var form = $(this).closest("form")
 
-  console.log(data);
-
-    $.ajax({
-      url: "/update_attendance",
-      dataType: "json",
-      type: "patch",
-      data: data
-    }).then(function(response){
-      console.log(response);
-    });
-
+  $.ajax({
+    url: form.attr("action") ,
+    dataType: "json",
+    type: "patch",
+    data: form.serializeObject()
+  }).then(function(res){
+    console.log(res) 
+  })
 };

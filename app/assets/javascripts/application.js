@@ -16,5 +16,5 @@
 //= require_tree .
 
 $(document).ready(function(){
-  //$('div.student input').on("click", updateAttendance);
+  $('div.student input').on("click", updateAttendance);
 });
