@@ -2,6 +2,7 @@
 <div class="students">
   <% @attendances.each do |attendance| %>
     <div class="student attendance">
+      <img src='<%= attendance.membership.user.image_url %>'>
       <h3><%= attendance.membership.user.username %></h3>
       <%= form_for [@group, @event, attendance] do |f| %>
         <label>

@@ -47,6 +47,7 @@ students = [
 
 students.each do |student|
   student = User.sign_up(student[0], student[1])
+  student.image_url = "http://placebear.com/200/200"
   student.save
   membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
   wdi[:students][student.username] = membership
