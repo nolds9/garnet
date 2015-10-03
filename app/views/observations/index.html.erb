@@ -1,0 +1,19 @@
+<a href="../">&larr;</a>
+<h2><%= @student.user.username %></h2>
+
+
+<h3>Observations</h3>
+
+<%= form_for [@group, @student, @observation] do |f| %>
+ <%= f.label :status %> 
+ <%= f.text_field :status %> 
+ <%= f.label :body %> 
+ <%= f.text_field :body %> 
+ <%= f.submit %>
+
+<% end %>
+
+<% @student.student_observations.each do |observation| %>
+  <%= observation.body %>
+  <hr>
+<% end %>
