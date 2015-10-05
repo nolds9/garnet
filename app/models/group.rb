@@ -9,6 +9,15 @@ class Group < ActiveRecord::Base
     Group.find_by(title: group_name)
   end
 
+  def self.bulk_create(groups, parent = nil)
+    groups.each do |key, subgroups|
+      group = self.create(title: key, parent_id: parent)
+      if subgroups.count > 0
+        self.bulk_create(subgroups, group.id)
+      end
+    end
+  end
+
   def all_subgroups(collection = nil)
     collection = collection || []
     self.subgroups.each do |subgroup|
@@ -26,15 +35,6 @@ class Group < ActiveRecord::Base
     end
     tree[:subgroups] = subgroups
     return tree
-  end
-
-  def self.bulk_create(groups, parent = nil)
-    groups.each do |key, subgroups|
-      group = self.create(title: key, parent_id: parent)
-      if subgroups.count > 0
-        self.bulk_create(subgroups, group.id)
-      end
-    end
   end
 
 end

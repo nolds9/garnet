@@ -50,10 +50,12 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
 
 - `User.named`: short for `User.find_by(username: )`
 - `@user.role`: returns a specific membership
+- `@user.minions`: returns all users of all groups of which the user is a member, who are not admins
 
 - `Membership.in_role`: returns a specific membership
 - `Membership.bulk_create`
 - `@membership.observe(name, body)`: creates an observation for a non-admin with a particular name in that membership's group
+- `@membership.minions`: returns all other members of the group that are not admin
 
 - `Group.bulk_create`: creates a tree of groups (nested groups)
 - `Group.named`: short for `Group.find_by(title: )`
