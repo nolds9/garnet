@@ -1,0 +1,9 @@
+<p>
+  <% @student.student_observations.each do |observation| %>
+    <div style="background-color:<%= observation.status %>">
+      <p><%= observation.body %></p>
+      <p><%= observation.author.name %></p>
+      <p><%= time_ago_in_words(observation.created_at) %> ago</p>
+    </div>
+  <% end %>
+</p>
