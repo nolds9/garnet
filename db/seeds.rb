@@ -70,8 +70,8 @@ students7 = [
 
 
 Group.bulk_create(groups)
-wdi6 = Group.find_by(title: "wdidc6")
-wdi7 = Group.find_by(title: "wdidc7")
+wdi6 = Group.named("wdidc6")
+wdi7 = Group.named("wdidc7")
 
 Membership.bulk_create(instructors6, wdi6.id, true)
 Membership.bulk_create(students6, wdi6.id, false)
@@ -79,13 +79,18 @@ Membership.bulk_create(students6, wdi6.id, false)
 Membership.bulk_create(instructors7, wdi7.id, true)
 Membership.bulk_create(students7, wdi7.id, false)
 
-robin = User.find_by(username: "robin")
-jane = User.find_by(username: "jane")
+robin = User.named("robin")
+jesse = User.named("jesse")
+andy = User.named("andy")
+jane = User.named("jane")
 
-robin.role("wdidc6", "admin").authored_observations.create!(
-  observee_id: jane.role("wdidc6", "student").id,
-  body:        "Jane is cool. A+"
-)
+robin.role("wdidc6", "admin").observe("jane", "Jane is cool. A+")
+robin.role("wdidc6", "admin").observe("jane", "Jane is no longer cool")
+jesse.role("wdidc6", "admin").observe("jane", "Jane smells")
+andy.role("wdidc6", "admin").observe("jane", "Basically wrote Facebook for final project")
+robin.role("wdidc6", "admin").observe("joe", "Joe is lame. F-")
+jesse.role("wdidc6", "admin").observe("joe", "Joe bribed me with donuts")
+robin.role("wdidc6", "admin").observe("dikembe", "Dikembe has a cool name. C-")
 
 day_one = wdi6.events.create(date: DateTime.new(2015, 10, 16))
 day_two = wdi7.events.create(date: DateTime.new(2015, 10, 17))

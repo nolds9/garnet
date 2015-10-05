@@ -13,6 +13,10 @@ class User < ActiveRecord::Base
     )
   end
 
+  def self.named username
+    User.find_by(username: username)
+  end
+
   def role group_title, is_admin = false
     if is_admin == "admin"
       is_admin = true

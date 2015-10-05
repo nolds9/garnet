@@ -48,10 +48,15 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
 
 ## Methods of note
 
+- `User.named`: short for `User.find_by(username: )`
 - `@user.role`: returns a specific membership
+
 - `Membership.in_role`: returns a specific membership
 - `Membership.bulk_create`
+- `@membership.observe(name, body)`: creates an observation for a non-admin with a particular name in that membership's group
+
 - `Group.bulk_create`: creates a tree of groups (nested groups)
+- `Group.named`: short for `Group.find_by(title: )`
 - `@group.all_subgroups`: returns a single-level array of all subgroups nested under this group
 - `@group.subgroup_tree`: returns a nested hash of all subgroups nested under this group
 
