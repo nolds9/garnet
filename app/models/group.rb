@@ -28,7 +28,7 @@ class Group < ActiveRecord::Base
     groups.each do |key, subgroups|
       group = self.create(title: key, parent_id: parent)
       if subgroups.count > 0
-        self.bulkCreate(subgroups, group.id)
+        self.bulk_create(subgroups, group.id)
       end
     end
   end

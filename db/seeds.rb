@@ -69,7 +69,7 @@ students7 = [
 ]
 
 
-Group.bulkCreate(groups)
+Group.bulk_create(groups)
 wdi6 = Group.find_by(title: "wdidc6")
 wdi7 = Group.find_by(title: "wdidc7")
 
