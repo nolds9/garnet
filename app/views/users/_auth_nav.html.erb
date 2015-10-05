@@ -1,16 +1,12 @@
 <nav>
-  <% if session[:user] %>
-    <a href="/sign_out"><%= current_user.username %>: sign out</a>
-    <a href="/github/authorize">
-      <% if current_user.github_username %>
-        <img src="<%= current_user.image_url %>" alt="<%= current_user.github_username %>" width="75" height="75" title="Refresh your Github info" />
-      <% else %>
-        authorize Github
-      <% end %>
+  <% if current_user %>
+  <a href="/profile">
+    <%= current_user.username %>
     </a>
+  <a href="/sign_out">sign out</a>
   <% else %>
-    <a href="/sign_up">Sign up</a>
-    <a href="/sign_in">Sign in</a>
+  <a href="/sign_up">Sign up</a>
+  <a href="/sign_in">Sign in</a>
   <% end %>
 </nav>
 <div class="errareHumanumEst">
