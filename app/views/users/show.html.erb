@@ -1,0 +1,8 @@
+<%= avatar(@user) %>
+<h2><%= @user.username %></h2>
+<p>User ID <%= @user.id %></p>
+<% if @is_current_user %>
+  <p>This is your profile.</p>
+  <p><a href="/github/authorize">Link your Github account</a></p>
+  <p>Soon: Change your password.</p>
+<% end %>
