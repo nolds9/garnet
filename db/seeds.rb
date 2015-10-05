@@ -69,15 +69,15 @@ students7 = [
 ]
 
 
-Group.bulkCreate(groups)
+Group.bulk_create(groups)
 wdi6 = Group.find_by(title: "wdidc6")
 wdi7 = Group.find_by(title: "wdidc7")
 
-Membership.bulkCreate(instructors6, wdi6.id, true)
-Membership.bulkCreate(students6, wdi6.id, false)
+Membership.bulk_create(instructors6, wdi6.id, true)
+Membership.bulk_create(students6, wdi6.id, false)
 
-Membership.bulkCreate(instructors7, wdi7.id, true)
-Membership.bulkCreate(students7, wdi7.id, false)
+Membership.bulk_create(instructors7, wdi7.id, true)
+Membership.bulk_create(students7, wdi7.id, false)
 
 robin = User.find_by(username: "robin")
 jane = User.find_by(username: "jane")

@@ -23,7 +23,7 @@ class Membership < ActiveRecord::Base
     return membership
   end
 
-  def self.bulkCreate(array, group_id, is_admin)
+  def self.bulk_create(array, group_id, is_admin)
     array.each do |person|
       user = User.find_by(username: person[0])
       if(!user)
