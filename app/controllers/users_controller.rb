@@ -2,7 +2,15 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate, except: [:show]
 
+  def show
+    @user = User.find_by(username: (params[:user] || current_user.username))
+    @is_current_user = (@user.id == current_user.id)
+  end
+
   def sign_up
+    if current_user
+      redirect_to :show
+    end
   end
 
   def sign_up!
@@ -22,28 +30,29 @@ class UsersController < ApplicationController
   end
 
   def sign_in
+    if current_user
+      redirect_to :show
+    end
   end
 
   def sign_in!
-    if session[:user]
-      @user = User.find(session[:user]["id"])
+    if current_user
+      @user = current_user
     else
       @user = User.find_by(username: params[:username])
     end
-    if !@user
-      message = "This user doesn't exist!"
-    elsif !@user.sign_in(params[:password])
-      message = "Your password's wrong!"
-    else
+    if @user && @user.sign_in(params[:password])
       cookies[:username] = @user.username
-      session[:user]= @user
-      message = "You're signed in, #{@user.username}!"
-    end
-    flash[:notice] = message
-    if @user.groups.length == 1 && @user.memberships[0].is_admin? == false
-      return redirect_to "/report_card/#{@user.groups[0].id}"
+      session[:user] = @user
+      flash[:notice] = "You're signed in, #{@user.username}!"
+      if @user.memberships.length <= 1 || @user.memberships[0].is_admin?
+        redirect_to groups_path
+      else
+        redirect_to "/report_card/#{@user.groups[0].id}"
+      end
     else
-      return redirect_to groups_path
+      flash[:alert] = "Your password's wrong, or that user doesn't exist."
+      render :sign_in
     end
   end
 
@@ -67,17 +76,20 @@ class UsersController < ApplicationController
 
   def refresh_github_info
     gh_user = Github.new(ENV, session[:access_token]).api.user
-    if User.find_by(github_id: gh_user["id"])
-      flash[:alert] = "Another user has already linked to that Github account."
+    gh_params = {
+      github_id: gh_user["id"],
+      username: gh_user["login"],
+      image_url: gh_user["avatar_url"]
+    }
+    if current_user
+      @user = current_user
+    elsif User.exists?(github_id: gh_user["id"])
+      @user = User.find_by(github_id: gh_user["id"])
     else
-      @user = User.find(session[:user]["id"])
-      @user.update({
-        github_id: gh_user["id"],
-        github_username: gh_user["login"],
-        image_url: gh_user["avatar_url"]
-      })
-      session[:user] = @user
+      @user = User.create(gh_params)
     end
+    @user.update(gh_params)
+    session[:user] = @user
     redirect_to :root
   end
 
