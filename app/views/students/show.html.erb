@@ -1,4 +1,5 @@
-<%= @observation.inspect %>
+<h2><%= @student.name %></h2>
+<h3>New Observation</h3>
 <%= form_for [@group, @student, @observation] do |f| %>
  <%= f.label :status %>
  <%= f.text_field :status %>
@@ -7,6 +8,8 @@
  <%= f.submit %>
 
 <% end %>
+
+<h3>All Observations</h3>
 <% @student.student_observations.each do |observation| %>
   <div style="background-color:<%= observation.status %>">
     <p><%= observation.body %></p>
