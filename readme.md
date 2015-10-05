@@ -48,7 +48,12 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
 
 ## Methods of note
 
-
+- `@user.role`: returns a specific membership
+- `Membership.in_role`: returns a specific membership
+- `Membership.bulkCreate`
+- `Group.bulkCreate`: creates a tree of groups (nested groups)
+- `@group.all_subgroups`: returns a single-level array of all subgroups nested under this group
+- `@group.subgroup_tree`: returns a nested hash of all subgroups nested under this group
 
 ## User stories
 
