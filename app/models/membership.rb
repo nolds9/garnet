@@ -44,6 +44,10 @@ class Membership < ActiveRecord::Base
     self.authored_observations.create!(observee_id: observee_m.id, body: body)
   end
 
+  def last_observation
+    self.student_observations.last
+  end
+
   def minions
     group = self.group
     group.memberships.where(is_admin?: false)
@@ -55,12 +59,14 @@ class Membership < ActiveRecord::Base
     tardys = attendances.where(status: "tardy").length
     presents = attendances.where(status: "present").length
     absents = attendances.where(status: "absent").length
+    combined_absences = absents + ( tardys / 4.0 )
 
     return {
       membership_id: self.id,
       tardys: tardys,
       presents: presents,
-      absents: absents
+      absents: absents,
+      combined_absences: combined_absences
     }
   end
 
@@ -92,12 +98,15 @@ class Membership < ActiveRecord::Base
     incompletes = submissions.where(status: "incomplete").length
     missings = submissions.where(status: "missing").length
     completes = submissions.where(status: "complete").length
+    total = incompletes + missings + completes
+    percentage = ((completes / total.to_f ) * 100).round
 
     return summary = {
       membership_id: self.id,
       incompletes: incompletes,
       missings: missings,
-      completes: completes
+      completes: completes,
+      percentage: percentage
     }
 
   end
