@@ -24,7 +24,7 @@ class Group < ActiveRecord::Base
     return tree
   end
 
-  def self.bulkCreate(groups, parent = nil)
+  def self.bulk_create(groups, parent = nil)
     groups.each do |key, subgroups|
       group = self.create(title: key, parent_id: parent)
       if subgroups.count > 0
