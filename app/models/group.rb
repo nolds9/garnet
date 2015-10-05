@@ -5,6 +5,10 @@ class Group < ActiveRecord::Base
   belongs_to :parent, class_name: "Group"
   has_many :subgroups, class_name: "Group", foreign_key: "parent_id"
 
+  def self.named(group_name)
+    Group.find_by(title: group_name)
+  end
+
   def all_subgroups(collection = nil)
     collection = collection || []
     self.subgroups.each do |subgroup|
