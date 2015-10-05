@@ -40,7 +40,7 @@ class UsersController < ApplicationController
       message = "You're signed in, #{@user.username}!"
     end
     flash[:notice] = message
-    if @user.groups.length == 1
+    if @user.groups.length == 1 && @user.memberships[0].is_admin? == false
       return redirect_to "/report_card/#{@user.groups[0].id}"
     else
       return redirect_to groups_path
