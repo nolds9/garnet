@@ -38,10 +38,10 @@ class Membership < ActiveRecord::Base
     self.user.username
   end
 
-  def observe name, body
+  def observe name, body, color
     observee = User.find_by(username: name)
     observee_m = self.group.memberships.find_by(user_id: observee.id)
-    self.authored_observations.create!(observee_id: observee_m.id, body: body)
+    self.authored_observations.create!(observee_id: observee_m.id, body: body, status: color )
   end
 
   def last_observation
@@ -71,27 +71,6 @@ class Membership < ActiveRecord::Base
   end
 
   def get_submission_summary
-    # summary = {
-    #   membership_id: self.id,
-    #   incompletes: 0,
-    #   missings: 0,
-    #   completes: 0
-    # }
-    # self.submitted_submissions.each do |submission|
-    #   if submission.assignment.category != "project"
-    #     binding.pry
-    #     if submission.status == "incomplete"
-    #       summary[:incompletes] += 1
-    #     elsif submission.status == "complete"
-    #       summary[:completes] += 1
-    #     elsif submission.status == "missing"
-    #       summary[:missings] += 1
-    #     end
-    #   end
-    # end
-    #
-    # return summary
-
     # TODO need a way to filter out projects
     submissions = self.submitted_submissions
 
@@ -108,7 +87,55 @@ class Membership < ActiveRecord::Base
       completes: completes,
       percentage: percentage
     }
+  end
 
+  def color
+    percent = get_green_percent
+    hue = percent * 1.2 / 360
+    rgb = hsl_to_rgb( hue, 1, 0.5 )
+    return "rgb(#{rgb[0]}, #{rgb[1]}, #{rgb[2]})"
+  end
+
+  def hsl_to_rgb(h, s, l)
+    if s == 0
+      b = l.to_f
+      g = l.to_f
+      r = l.to_f
+    else
+      q = l.to_f < 0.5 ? (l.to_f * (1 + s.to_f)) : (l.to_f + s.to_f - l.to_f * s.to_f)
+      p = 2 * l.to_f - q;
+      r = hue_to_rgb(p, q, (h + 1/3.0))
+      g = hue_to_rgb(p, q, h)
+      b = hue_to_rgb(p, q, (h - 1/3.0))
+    end
+    return [(r * 255).to_i, (g * 255).to_i,(b * 255).to_i ]
+  end
+
+  def hue_to_rgb(p,q,t)
+    if t < 0
+      t += 1
+    end
+    if t > 1
+      t -= 1
+    end
+    if t < 1/6.0
+      return (p + (q-p) * 6 * t)
+    end
+    if t < 1/2.0
+      return q
+    end
+    if t < 2/3.0
+      return (p + (q - p) * (2/3.0 - t) * 6)
+    end
+      return p
+  end
+
+  def get_green_percent
+    yellow = self.student_observations.where(status: "yellow").size
+    green = self.student_observations.where(status: "green").size
+    green += yellow/2.0
+    total = self.student_observations.where(status:["yellow","green","red"]).size
+    total == 0 ? 0 : (green/total.to_f * 100)
   end
 
 end

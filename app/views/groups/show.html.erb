@@ -8,12 +8,14 @@
 </div>
 <h3>Observations</h3>
 <% @student_memberships.each do |membership| %>
-  <p><%= membership.user.username %></p>
-  <p>Combined Absences: <%= membership.get_attendance_summary[:combined_absences] %> days</p>
-  <p>Homework Submissions: <%= membership.get_submission_summary[:percentage] %>%</p>
-  <% if membership.last_observation %>
-    <p><%= time_ago_in_words( membership.last_observation.updated_at ) + " ago." %></p>
-  <% end %>
+  <div style="background-color: <%= membership.color %>">
+    <p><%= link_to membership.user.username, group_membership_path( @group, membership ) %></p>
+    <p>Combined Absences: <%= membership.get_attendance_summary[:combined_absences] %> days</p>
+    <p>Homework Submissions: <%= membership.get_submission_summary[:percentage] %>%</p>
+    <% if membership.last_observation %>
+      <p><%= time_ago_in_words( membership.last_observation.updated_at ) + " ago." %></p>
+    <% end %>
+  </div>
 <% end %>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
 <script charset="utf-8">
