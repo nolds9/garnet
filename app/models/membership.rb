@@ -34,10 +34,19 @@ class Membership < ActiveRecord::Base
     end
   end
 
+  def name
+    self.user.username
+  end
+
   def observe name, body
     observee = User.find_by(username: name)
     observee_m = self.group.memberships.find_by(user_id: observee.id)
     self.authored_observations.create!(observee_id: observee_m.id, body: body)
+  end
+
+  def minions
+    group = self.group
+    group.memberships.where(is_admin?: false)
   end
 
   def get_attendance_summary

@@ -31,4 +31,12 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
+  def minions
+    minions = []
+    self.groups.each do |group|
+      minions.concat(group.memberships.where(is_admin?: false))
+    end
+    return minions
+  end
+
 end
