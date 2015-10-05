@@ -7,6 +7,33 @@ class Membership < ActiveRecord::Base
   has_many :graded_submissions, :class_name => 'Submission', :foreign_key => 'grader_id' # as instructor
   has_many :submitted_submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'# as student submitter
 
+  def self.in_role(name, group_title, is_admin = false)
+    if is_admin == "admin"
+      is_admin = true
+    elsif is_admin == "student"
+      is_admin = false
+    end
+    user = User.find_by(username: name)
+    group = Group.find_by(title: group_title)
+    membership = Membership.find_by(
+      user_id: user.id,
+      group_id: group.id,
+      is_admin?: is_admin
+    )
+    return membership
+  end
+
+  def self.bulkCreate(array, group_id, is_admin)
+    array.each do |person|
+      user = User.find_by(username: person[0])
+      if(!user)
+        user = User.sign_up(person[0], person[1])
+        user.save
+      end
+      user.memberships.create(group_id: group_id, is_admin?: is_admin)
+    end
+  end
+
   def get_attendance_summary
     attendances = self.attendances
 

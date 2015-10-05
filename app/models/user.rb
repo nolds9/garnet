@@ -13,6 +13,16 @@ class User < ActiveRecord::Base
     )
   end
 
+  def role group_title, is_admin = false
+    if is_admin == "admin"
+      is_admin = true
+    elsif is_admin == "student"
+      is_admin = false
+    end
+    group = Group.find_by(title: group_title)
+    return self.memberships.find_by(group_id: group.id, is_admin?: is_admin)
+  end
+
   def sign_in password
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
