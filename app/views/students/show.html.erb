@@ -1,0 +1,16 @@
+<%= @observation.inspect %>
+<%= form_for [@group, @student, @observation] do |f| %>
+ <%= f.label :status %>
+ <%= f.text_field :status %>
+ <%= f.label :body %>
+ <%= f.text_field :body %>
+ <%= f.submit %>
+
+<% end %>
+<% @student.student_observations.each do |observation| %>
+  <div style="background-color:<%= observation.status %>">
+    <p><%= observation.body %></p>
+    <p><%= observation.author.name %></p>
+    <p><%= time_ago_in_words(observation.created_at) %> ago</p>
+  </div>
+<% end %>
