@@ -6,7 +6,6 @@ class CreateUsers < ActiveRecord::Migration
       t.string    :last_name
       t.string    :password_digest
       t.string    :github_id
-      t.string    :github_username
       t.string    :email
       t.string    :image_url
 
