@@ -31,10 +31,7 @@ class UsersController < ApplicationController
 
   def sign_in
     if current_user
-      puts "A" * 50
       redirect_to :show
-    else
-      puts "B" * 50
     end
   end
 
@@ -47,14 +44,15 @@ class UsersController < ApplicationController
     if @user && @user.sign_in(params[:password])
       cookies[:username] = @user.username
       session[:user] = @user
-      message = "You're signed in, #{@user.username}!"
-      if @user.groups.length <= 1 && @user.memberships[0].is_admin?
-        redirect_to groups_path, notice: message
+      flash[:notice] = "You're signed in, #{@user.username}!"
+      if @user.memberships.length <= 1 || @user.memberships[0].is_admin?
+        redirect_to groups_path
       else
-        redirect_to "/report_card/#{@user.groups[0].id}", notice: message
+        redirect_to "/report_card/#{@user.groups[0].id}"
       end
     else
-      render :sign_in, alert: "Your password's wrong, or that user doesn't exist."
+      flash[:alert] = "Your password's wrong, or that user doesn't exist."
+      render :sign_in
     end
   end
 
@@ -83,7 +81,9 @@ class UsersController < ApplicationController
       username: gh_user["login"],
       image_url: gh_user["avatar_url"]
     }
-    if User.exists?(github_id: gh_user["id"])
+    if current_user
+      @user = current_user
+    elsif User.exists?(github_id: gh_user["id"])
       @user = User.find_by(github_id: gh_user["id"])
     else
       @user = User.create(gh_params)

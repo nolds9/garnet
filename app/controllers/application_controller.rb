@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   private
     def authenticate
-      if !session[:user]
+      if !current_user
         redirect_to "/sign_in"
       end
     end
@@ -16,7 +16,6 @@ class ApplicationController < ActionController::Base
       if session[:user] && User.exists?(id: session[:user]["id"])
         return User.find(session[:user]["id"])
       else
-        reset_session
         return false
       end
     end
