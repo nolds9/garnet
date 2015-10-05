@@ -1,5 +1,9 @@
 class GroupsController < ApplicationController
   # before_action :check_for_single_group, only: [:index]
+
+  def tree
+  end
+
   def index
     @memberships = current_user.memberships
     @admin_memberships = @memberships.where(is_admin?: true)
@@ -33,7 +37,6 @@ class GroupsController < ApplicationController
     end
 
     @instructor_memberships = current_user.memberships
-    puts current_user.memberships
     group_id_array = @instructor_memberships.map(&:group_id)
     @groups = group_id_array.map do |id|
       Group.find(id)

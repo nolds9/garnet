@@ -27,6 +27,15 @@ class Group < ActiveRecord::Base
     return collection
   end
 
+  def all_parents(collection = nil)
+    collection = collection || []
+    if self.parent
+      collection.push(self.parent)
+      self.parent.all_parents(collection)
+    end
+    return collection
+  end
+
   def subgroup_tree
     tree = self.as_json
     subgroups = []

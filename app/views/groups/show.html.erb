@@ -1,4 +1,5 @@
 <div class='dashboard'>
+  <h2><%= @group.title %> <%= breadcrumbs(@group) %></h2>
   <h2><%= link_to "Assignments", group_assignments_path(@group) %> </h2>
   <h2>
     <%= form_for [@group, @event] do |f| %>
@@ -6,6 +7,7 @@
     <% end %>
   </h2>
   <h2><%= link_to "Observations", group_students_path(@group) %></h2>
+  <ul><%= subgroup_tree_html(@group) %></ul>
 </div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
 <script charset="utf-8">

@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get "/report_card/:id", to: 'groups#report_card'
 
+  get "/groups/tree", to: "groups#tree"
+
   resources :groups do
     resources :events do
       resources :attendances
