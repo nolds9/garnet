@@ -21,9 +21,6 @@
     </h1>
     <%= render "users/auth_nav" %>
   </div>
-  <pre>
-  <%= Group.find_by(title: "ga").subgroup_tree.to_json %>
-  </pre>
 
 <%= yield %>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js" charset="utf-8">
