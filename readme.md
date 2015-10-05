@@ -14,7 +14,7 @@ $ rails s
 
 ## current_user
 
-...it exists! See the application controller and helper.
+It exists. See the application controller and helper.
 
 ## Github Authentication
 
@@ -45,6 +45,10 @@ request = Github.new(ENV, session[:access_token]).api.repos
 ```
 
 It's built on the Octokit gem. For more information [see the Octokit docs](https://github.com/octokit/octokit.rb).
+
+## Methods of note
+
+
 
 ## User stories
 

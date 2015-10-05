@@ -23,6 +23,17 @@ class Membership < ActiveRecord::Base
     return membership
   end
 
+  def self.bulkCreate(array, group_id, is_admin)
+    array.each do |person|
+      user = User.find_by(username: person[0])
+      if(!user)
+        user = User.sign_up(person[0], person[1])
+        user.save
+      end
+      user.memberships.create(group_id: group_id, is_admin?: is_admin)
+    end
+  end
+
   def get_attendance_summary
     attendances = self.attendances
 

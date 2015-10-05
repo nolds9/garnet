@@ -68,35 +68,16 @@ students7 = [
   ["ron", "weasley"]
 ]
 
-def createGroupsFromCollection(groups, parent = nil)
-  groups.each do |key, subgroups|
-    group = Group.create(title: key, parent_id: parent)
-    if subgroups.count > 0
-      createGroupsFromCollection(subgroups, group.id)
-    end
-  end
-end
 
-def createMembershipsFromArray(array, group_id, is_admin)
-  array.each do |person|
-    user = User.find_by(username: person[0])
-    if(!user)
-      user = User.sign_up(person[0], person[1])
-      user.save
-    end
-    user.memberships.create(group_id: group_id, is_admin?: is_admin)
-  end
-end
-
-createGroupsFromCollection(groups)
+Group.bulkCreate(groups)
 wdi6 = Group.find_by(title: "wdidc6")
 wdi7 = Group.find_by(title: "wdidc7")
 
-createMembershipsFromArray(instructors6, wdi6.id, true)
-createMembershipsFromArray(students6, wdi6.id, false)
+Membership.bulkCreate(instructors6, wdi6.id, true)
+Membership.bulkCreate(students6, wdi6.id, false)
 
-createMembershipsFromArray(instructors7, wdi7.id, true)
-createMembershipsFromArray(students7, wdi7.id, false)
+Membership.bulkCreate(instructors7, wdi7.id, true)
+Membership.bulkCreate(students7, wdi7.id, false)
 
 robin = User.find_by(username: "robin")
 jane = User.find_by(username: "jane")
