@@ -2,18 +2,20 @@
 
 <h3>Attendance</h3>
 <div>
-  <p>Tardy: <%# @student.tardies.length %></p>
-  <p>Absent: <%# @student.absents.length %></p>
+  <p>Tardy: <%= @attendances.where(status: 1).length %></p>
+  <p>Absent: <%= @attendances.where(status: 0).length %></p>
 </div>
 <div>
   <table>
     <tr>
+      <th>id</th>
+      <th>Group</th>
       <th>Date</th>
       <th>Status</th>
-      <th>Recorded in</th>
     </tr>
-    <% @student.get_subgroups("attendances").each do |attendance| %>
+    <% @attendances.each do |attendance| %>
     <tr>
+      <td><%= attendance.id %></td>
       <td><%= attendance.event.group.title %></td>
       <td><%= attendance.date %></td>
       <td><%= attendance.status_english %></td>
@@ -24,7 +26,7 @@
 
 <h3>Assignments</h3>
 <div>
-  <p>Incomplete: <%# @student.incompletes.length %></p>
+  <p>Incomplete: <%= @submissions.where("status <= ?", 1).length %></p>
 </div>
 <div>
   <table>
@@ -34,7 +36,7 @@
       <th>Status</th>
       <th>Title</th>
     </tr>
-    <% @student.get_subgroups("submissions").each do |submission| %>
+    <% @submissions.each do |submission| %>
     <tr>
       <td><%= submission.assignment.group.title %></td>
       <td><%= submission.due_date %></td>

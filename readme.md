@@ -62,6 +62,17 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
 - `@group.subgroup_array`: returns a single-level array of all subgroups nested under this group
 - `@group.subgroup_tree`: returns a nested hash of all subgroups nested under this group
 - `@group.get_subgroups(key)`: for example, `@group.get_subgroups("attendances")`. Imagine there's an apostrophe at the end of `subgroups`.
+- `@group.members`: returns a hash of all group members' and submembers' submissions, observations, and attendances
+
+## Helpers of note
+
+- Application
+  - `color_of`: turns an input number into its corresponding color (for color scales)
+  - `percent_of(collection, value)`: how many members of an AR collection are of a certain value
+
+- Group
+  - `breadcrumbs`: navigation breadcrumbs for the current group
+  - `subgroup_tree_html`: nested `<ul>` of the current group and its subgroups
 
 ## User stories
 

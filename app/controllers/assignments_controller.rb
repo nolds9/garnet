@@ -2,8 +2,8 @@ class AssignmentsController < ApplicationController
 
   def index
     @group = Group.find(params[:group_id])
-    @assignment  = Assignment.new
-    @assignments = Assignment.where(group_id: @group.id)
+    @assignment = Assignment.new
+    @assignments = @group.get_subgroups("assignments")
   end
 
   def show

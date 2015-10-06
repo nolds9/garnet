@@ -1,43 +1,30 @@
-<header class='cf'>
-  <nav>
-    <ul>
-      <li>
-        <%= link_to "Students", group_path(params[:group_id]) %>
-      </li>
-    </ul>
-  </nav>
+<h2><%= breadcrumbs(@group) %></h2>
 
-</header>
-
-<h1>Assignments</h1>
+<h2>Assignments</h2>
+<%= form_for [@group, @assignment] do |f| %>
+  <%= f.text_field :title, placeholder: "Title" %>
+  <%= f.select :category, [["homework","homework"],["outcomes","outcomes"],["project","project"]] %>
+  <%= f.text_field :repo_url, placeholder: "Repo Url"%>
+  <%= f.date_field :due_date %>
+  <%= f.submit %>
+<% end %>
 <table class="tablesorter">
-  <thead>
-    <%= form_for [@group, @assignment] do |f| %>
-      <%= f.text_field :title, placeholder: "Title" %>
-      <%= f.select :category, [["homework","homework"],["outcomes","outcomes"],["project","project"]] %>
-      <%= f.text_field :repo_url, placeholder: "Repo Url"%>
-      <%= f.date_field :due_date %>
-      <%= f.submit %>
-    <% end %>
-    <tr>
-      <th>Title</th>
-      <th>Percent Complete</th>
-      <th>Type</th>
-      <th>Repo Url</th>
-      <th>Due Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @assignments.each do |assignment| %>
-      <tr>
-        <td><%= link_to "#{assignment.title}", group_assignment_path(@group, assignment) %></td>
-        <td><%#= "%#{assignment.completion_rate}" %></td>
-        <td><%= assignment.category %></td>
-        <td><%= link_to repo_name(assignment.repo_url), assignment.repo_url %></td>
-        <td><%= assignment.due_date.strftime("%A, %B %e, %Y at %r") %></td>
-      </tr>
-    <% end %>
-  </tbody>
+  <tr>
+    <th>Title</th>
+    <th>Percent Complete</th>
+    <th>Type</th>
+    <th>Repo Url</th>
+    <th>Due Date</th>
+  </tr>
+  <% @assignments.each do |assignment| %>
+  <tr>
+    <td><%= link_to "#{assignment.title}", group_assignment_path(@group, assignment) %></td>
+    <td><%#= "%#{assignment.completion_rate}" %></td>
+    <td><%= assignment.category %></td>
+    <td><%= if assignment.repo_url then link_to repo_name(assignment.repo_url), assignment.repo_url end %></td>
+    <td><%= assignment.due_date.strftime("%A, %B %e, %Y at %r") %></td>
+  </tr>
+  <% end %>
 </table>
 
 <script src="https://cdn.jsdelivr.net/tablesorter/2.17.4/js/jquery.tablesorter.min.js">

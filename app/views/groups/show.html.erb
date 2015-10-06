@@ -1,5 +1,5 @@
 <div class='dashboard'>
-  <h2><%= @group.title %> <%= breadcrumbs(@group) %></h2>
+  <h2><%= breadcrumbs(@group) %></h2>
   <h2><%= link_to "Assignments", group_assignments_path(@group) %> </h2>
   <h2>
     <%= form_for [@group, @event] do |f| %>

@@ -10,11 +10,11 @@ module GroupsHelper
   end
 
   def breadcrumbs(group)
-    output = ""
+    output = [(link_to group.title, group_path(group))]
     group.all_parents.each do |group|
-      output += "&lt; <a href='/groups/#{group.id}'>#{group.title}</a>"
+      output.push((link_to group.title, group_path(group)))
     end
-    return output.html_safe
+    return output.join("<").html_safe
   end
 
 end

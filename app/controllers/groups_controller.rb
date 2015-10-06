@@ -14,7 +14,10 @@ class GroupsController < ApplicationController
   end
 
   def report_card
-    @student = Membership.find_by(group_id: params[:id], user_id: current_user.id)
+    @group = Group.find(params[:id])
+    @student = current_user.memberships.find_by(group_id: @group)
+    @attendances = @student.get_subgroups("attendances")
+    @submissions = @student.get_subgroups("submissions")
   end
 
   def show
