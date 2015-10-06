@@ -25,6 +25,10 @@ class User < ActiveRecord::Base
     return self.memberships.find_by(group_id: group.id, is_admin?: is_admin)
   end
 
+  def is_admin group_id
+
+  end
+
   def sign_in password
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end

@@ -7,6 +7,12 @@ class UsersController < ApplicationController
     @is_current_user = (@user.id == current_user.id)
   end
 
+  def delete
+    current_user.destroy
+    reset_session
+    redirect_to :root
+  end
+
   def sign_up
     if current_user
       redirect_to :show

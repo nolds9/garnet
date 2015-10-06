@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: 'application#welcome'
 
   get "/profile", to: "users#show"
+  delete "/profile/delete", to: "users#delete"
 
   get '/sign_in', to: 'users#sign_in'
   post '/sign_in', to: 'users#sign_in!'

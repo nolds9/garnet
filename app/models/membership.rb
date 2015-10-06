@@ -55,12 +55,10 @@ class Membership < ActiveRecord::Base
 
   def get_attendance_summary
     attendances = self.attendances
-
     tardys = attendances.where(status: "tardy").length
     presents = attendances.where(status: "present").length
     absents = attendances.where(status: "absent").length
     combined_absences = absents + ( tardys / 4.0 )
-
     return {
       membership_id: self.id,
       tardys: tardys,

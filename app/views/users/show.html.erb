@@ -4,5 +4,6 @@
 <% if @is_current_user %>
   <p>This is your profile.</p>
   <p><a href="/github/authorize">Link your Github account</a></p>
+  <p><%= link_to "Delete your account", profile_delete_path, confirm: "You sure?", method: :delete %></p>
   <p>Soon: Change your password.</p>
 <% end %>
