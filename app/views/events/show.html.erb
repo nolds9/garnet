@@ -1,4 +1,4 @@
-<h2><%= @event.date %></h2>
+<h3><%= @event.date.strftime("%A, %B %e, %Y") %></h3>
 <div class="students">
   <% @attendances.each do |attendance| %>
     <div class="student attendance">
