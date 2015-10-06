@@ -1,11 +1,29 @@
-<h2>Students</h2>
-<% @student_memberships.each do |membership| %>
-  <div style="background-color: <%= membership.color %>">
-    <p><%= link_to membership.user.username, group_student_path( @group, membership ) %></p>
-    <p>Combined Absences: <%= membership.get_attendance_summary[:combined_absences] %> days</p>
-    <p>Homework Submissions: <%= membership.get_submission_summary[:percentage] %>%</p>
-    <% if membership.last_observation %>
-      <p><%= time_ago_in_words( membership.last_observation.updated_at ) + " ago." %></p>
+<h2><%= breadcrumbs(@group) %></h2>
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th colspan="4">Submissions</th>
+    <th colspan="4">Attendance</th>
+    <th colspan="4">Observations</th>
+  </tr>
+  <tr>
+    <th></th>
+    <th></th>
+    <% 3.times do %>
+    <th title="Average number of points">Avg Pts</th>
+    <th title="Total number of points">Tot Pts</th>
+    <th title="Percent that have a value of 2">Pct OK</th>
+    <th title="Total in which it was possible to get 2">Tot Poss</th>
     <% end %>
-  </div>
+  </tr>
+<% @students.each do |id, student| %>
+  <tr>
+    <td><%= avatar(student[:user]) %></td>
+    <th><%= link_to student[:user].username, group_student_path(@group.id, id) %></th>
+    <% [:submissions, :attendances, :student_observations].each do |datum| %>
+      <%= render partial: "data", locals: {collection: student[datum]} %>
+    <% end %>
+  </tr>
 <% end %>
+</table>

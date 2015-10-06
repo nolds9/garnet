@@ -1,7 +1,7 @@
 class CreateSubmissions < ActiveRecord::Migration
   def change
     create_table :submissions do |t|
-      t.string :status
+      t.integer :status
       t.text :student_notes
       t.text :grader_notes
       t.belongs_to :assignment

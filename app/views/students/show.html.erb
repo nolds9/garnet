@@ -1,19 +1,9 @@
+<h2><%= breadcrumbs(@group) %></h2>
 <h2><%= @student.name %></h2>
 <h3>New Observation</h3>
-<%= form_for [@group, @student, @observation] do |f| %>
- <%= f.label :status %>
- <%= f.text_field :status %>
- <%= f.label :body %>
- <%= f.text_field :body %>
- <%= f.submit %>
-
-<% end %>
+<%= render partial: "observations/form", locals: {group: @group, student: @student, observation: @observation} %>
 
 <h3>All Observations</h3>
 <% @student.student_observations.each do |observation| %>
-  <div style="background-color:<%= observation.status %>">
-    <p><%= observation.body %></p>
-    <p><%= observation.author.name %></p>
-    <p><%= time_ago_in_words(observation.created_at) %> ago</p>
-  </div>
+  <%= render partial: "observations/show", locals: {observation: observation} %>
 <% end %>

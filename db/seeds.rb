@@ -18,9 +18,9 @@ groups = {
           }
         },
         "wdidc6": {
-          "classroom1": {
+          "milk": {
           },
-          "classroom2": {
+          "cookies": {
           }
         },
         "wdidc7": {
@@ -72,14 +72,13 @@ students7 = [
 
 
 Group.bulk_create(groups)
-wdi6 = Group.named("wdidc6")
-wdi7 = Group.named("wdidc7")
 
-Membership.bulk_create(instructors6, wdi6.id, true)
-Membership.bulk_create(students6, wdi6.id, false)
+Membership.bulk_create(instructors6, Group.named("wdidc6").id, true)
+Membership.bulk_create(students6, Group.named("wdidc6").id, false)
+Membership.bulk_create(students6, Group.named("milk").id, false)
 
-Membership.bulk_create(instructors7, wdi7.id, true)
-Membership.bulk_create(students7, wdi7.id, false)
+Membership.bulk_create(instructors7, Group.named("wdidc7").id, true)
+Membership.bulk_create(students7, Group.named("wdidc7").id, false)
 
 robin = User.named("robin")
 jesse = User.named("jesse")
@@ -94,26 +93,24 @@ robin.role("wdidc6", "admin").observe("joe", "Joe is lame. F-", 0)
 jesse.role("wdidc6", "admin").observe("joe", "Joe bribed me with donuts", 1)
 robin.role("wdidc6", "admin").observe("dikembe", "Dikembe has a cool name. C-", 1)
 
-wdi6.events.create(date: DateTime.new(2015, 10, 16))
-wdi6.events.create(date: DateTime.new(2015, 10, 17))
-wdi7.events.create(date: DateTime.new(2015, 10, 16))
-wdi7.events.create(date: DateTime.new(2015, 10, 17))
+Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 16))
+Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 17))
+Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 16))
+Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 17))
 
-assignment_one = wdi6.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
-assignment_two = wdi6.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
+Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
+Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
+Group.named("milk").assignments.create(due_date: DateTime.new(2015, 10, 15), category: "homework", title: "Some homework")
+Group.named("cookies").assignments.create(due_date: DateTime.new(2015, 10, 14), category: "homework", title: "HW for Cookies")
 
-jane.role("wdidc6", "student").submitted_submissions.each_with_index do |submission, i|
-  if i % 2 == 0
-    submission.status = "complete"
-    submission.save
-  end
+jane.role("wdidc6", "student").submissions.each_with_index do |submission, i|
+  submission.update(status: rand(0..2))
+end
+
+jane.role("milk", "student").submissions.each_with_index do |submission, i|
+  submission.update(status: rand(0..2))
 end
 
 jane.role("wdidc6", "student").attendances.each_with_index do |attendance, i|
-  if i % 2 == 0
-    attendance.status = "absent"
-  else
-    attendance.status = "present"
-  end
-  attendance.save
+  attendance.update(status: rand(0..2))
 end

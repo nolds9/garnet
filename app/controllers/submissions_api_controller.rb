@@ -1,7 +1,7 @@
 class SubmissionsApiController < ApplicationController
   def index
     membership = Membership.find(params[:id])
-    submissions = membership.submitted_submissions
+    submissions = membership.submissions
     render json: submissions
   end
 

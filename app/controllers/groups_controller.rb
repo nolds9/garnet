@@ -14,16 +14,10 @@ class GroupsController < ApplicationController
   end
 
   def report_card
-    membership = Membership.find_by(group_id: params[:id], user_id: current_user.id)
-    @attendance_summary = membership.get_attendance_summary
-    @attendances = Attendance.where(membership_id: membership.id)
-    @tardies = @attendances.where(status: "tardy")
-    @absences = @attendances.where(status: "absent")
-
-    @submission_summary = membership.get_submission_summary
-    @missing_submissions = Submission.where(submitter_id: membership.id, status: "incomplete")
-    @missing_assignments = @missing_submissions.map{|submission| submission.assignment }
-
+    @group = Group.find(params[:id])
+    @student = current_user.memberships.find_by(group_id: @group)
+    @attendances = @student.get_subgroups("attendances")
+    @submissions = @student.get_subgroups("submissions")
   end
 
   def show
