@@ -1,9 +1,11 @@
-User.destroy_all
+Assignment.destroy_all
+Attendance.destroy_all
+Event.destroy_all
 Group.destroy_all
 Membership.destroy_all
 Observation.destroy_all
-Event.destroy_all
-Assignment.destroy_all
+Submission.destroy_all
+User.destroy_all
 
 groups = {
   "ga": {
@@ -92,8 +94,10 @@ robin.role("wdidc6", "admin").observe("joe", "Joe is lame. F-", "red")
 jesse.role("wdidc6", "admin").observe("joe", "Joe bribed me with donuts", "yellow")
 robin.role("wdidc6", "admin").observe("dikembe", "Dikembe has a cool name. C-", "yellow")
 
-day_one = wdi6.events.create(date: DateTime.new(2015, 10, 16))
-day_two = wdi7.events.create(date: DateTime.new(2015, 10, 17))
+wdi6.events.create(date: DateTime.new(2015, 10, 16))
+wdi6.events.create(date: DateTime.new(2015, 10, 17))
+wdi7.events.create(date: DateTime.new(2015, 10, 16))
+wdi7.events.create(date: DateTime.new(2015, 10, 17))
 
 assignment_one = wdi6.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
 assignment_two = wdi6.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")

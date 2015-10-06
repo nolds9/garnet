@@ -2,6 +2,7 @@ class Group < ActiveRecord::Base
   has_many :events
   has_many :assignments
   has_many :memberships
+  has_many :attendances, through: :events
   belongs_to :parent, class_name: "Group"
   has_many :subgroups, class_name: "Group", foreign_key: "parent_id"
 
@@ -16,15 +17,6 @@ class Group < ActiveRecord::Base
         self.bulk_create(subgroups, group.id)
       end
     end
-  end
-
-  def all_subgroups(collection = nil)
-    collection = collection || []
-    self.subgroups.each do |subgroup|
-      collection.push(subgroup)
-      subgroup.all_subgroups(collection)
-    end
-    return collection
   end
 
   def all_parents(collection = nil)
@@ -44,6 +36,29 @@ class Group < ActiveRecord::Base
     end
     tree[:subgroups] = subgroups
     return tree
+  end
+
+  def subgroup_array(collection = nil)
+    collection = collection || []
+    self.subgroups.each do |subgroup|
+      collection.push(subgroup)
+      subgroup.subgroup_array(collection)
+    end
+    return collection
+  end
+
+  def get_subgroups key
+    collection = []
+    if self.send(key).respond_to? "merge"
+      add_method = "concat"
+    else
+      add_method = "push"
+    end
+    subgroup_array.each do |subgroup|
+      result = subgroup.send(key)
+      collection.send(add_method, result)
+    end
+    return collection
   end
 
 end
