@@ -1,0 +1,8 @@
+.tablesorter{
+  td, th{
+    display:none;
+  }
+  tr td:first-child {
+    display:block;
+  }
+}
