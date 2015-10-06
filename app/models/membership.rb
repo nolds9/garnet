@@ -4,8 +4,8 @@ class Membership < ActiveRecord::Base
   has_many :attendances
   has_many :authored_observations, :class_name => 'Observation', :foreign_key => 'author_id' # as author
   has_many :student_observations, :class_name => 'Observation', :foreign_key => 'observee_id'# as observee
-  has_many :graded_submissions, :class_name => 'Submission', :foreign_key => 'grader_id' # as instructor
-  has_many :submitted_submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'# as student submitter
+  has_many :to_grades, :class_name => 'Submission', :foreign_key => 'grader_id' # as instructor
+  has_many :submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'# as student submitter
 
   def self.in_role(name, group_title, is_admin = false)
     if is_admin == "admin"
@@ -53,38 +53,30 @@ class Membership < ActiveRecord::Base
     group.memberships.where(is_admin?: false)
   end
 
-  def get_attendance_summary
-    attendances = self.attendances
-    tardys = attendances.where(status: "tardy").length
-    presents = attendances.where(status: "present").length
-    absents = attendances.where(status: "absent").length
-    combined_absences = absents + ( tardys / 4.0 )
-    return {
-      membership_id: self.id,
-      tardys: tardys,
-      presents: presents,
-      absents: absents,
-      combined_absences: combined_absences
-    }
-  end
-
-  def get_submission_summary
-    # TODO need a way to filter out projects
-    submissions = self.submitted_submissions
-
-    incompletes = submissions.where(status: "incomplete").length
-    missings = submissions.where(status: "missing").length
-    completes = submissions.where(status: "complete").length
-    total = incompletes + missings + completes
-    percentage = ((completes / total.to_f ) * 100).round
-
-    return summary = {
-      membership_id: self.id,
-      incompletes: incompletes,
-      missings: missings,
-      completes: completes,
-      percentage: percentage
-    }
+  def get_subgroups key = nil
+    submemberships = self.group.get_subgroups("memberships")
+    collection = []
+    add_method = "push"
+    if key
+      self_result = self.send(key)
+      if self_result.respond_to? "merge"
+        add_method = "concat"
+        collection = self_result
+      else
+        collection = [self_result]
+      end
+    end
+    submemberships.each do |membership|
+      if membership.user.id == self.user.id
+        if key
+          result = membership.send(key)
+        else
+          result = membership
+        end
+        collection.send(add_method, result)
+      end
+    end
+    return collection
   end
 
   def color

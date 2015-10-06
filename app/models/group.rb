@@ -48,11 +48,13 @@ class Group < ActiveRecord::Base
   end
 
   def get_subgroups key
-    collection = []
-    if self.send(key).respond_to? "merge"
+    self_result = self.send(key)
+    if self_result.respond_to? "merge"
       add_method = "concat"
+      collection = self_result
     else
-      add_method = "push"
+    add_method = "push"
+      collection = [self_result]
     end
     subgroup_array.each do |subgroup|
       result = subgroup.send(key)

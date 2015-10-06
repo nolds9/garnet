@@ -1,11 +1,16 @@
 <h2>Students</h2>
-<% @student_memberships.each do |membership| %>
-  <div style="background-color: <%= membership.color %>">
-    <p><%= link_to membership.user.username, group_student_path( @group, membership ) %></p>
-    <p>Combined Absences: <%= membership.get_attendance_summary[:combined_absences] %> days</p>
-    <p>Homework Submissions: <%= membership.get_submission_summary[:percentage] %>%</p>
-    <% if membership.last_observation %>
-      <p><%= time_ago_in_words( membership.last_observation.updated_at ) + " ago." %></p>
-    <% end %>
-  </div>
+<% @students.each do |id, student| %>
+<div>
+  <h3><%= User.find(id).username %></h3>
+  <dl>
+    <dt>Submissions</dt>
+    <dd><%= student[:submissions].length %></dd>
+
+    <dt>Attendances</dt>
+    <dd><%= student[:attendances].length %></dd>
+
+    <dt>Observations</dt>
+    <dd><%= student[:observations].length %></dd>
+  </dl>
+</div>
 <% end %>

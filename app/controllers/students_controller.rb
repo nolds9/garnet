@@ -1,10 +1,20 @@
 class StudentsController < ApplicationController
   def index
     @group = Group.find(params[:group_id])
-    @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
-    student_id_array = @student_memberships.map(&:user_id)
-    @students = student_id_array.map do |id|
-      User.find(id)
+    @memberships = @group.get_subgroups("memberships").where(is_admin?: false)
+    @students = {}
+    @memberships.each do |membership|
+      id = membership.user.id
+      if !@students.has_key?(id)
+        @students[id] = {
+          submissions: [],
+          attendances: [],
+          observations: []
+        }
+      end
+      @students[id][:submissions].concat(membership.submissions)
+      @students[id][:attendances].concat(membership.attendances)
+      @students[id][:observations].concat(membership.student_observations)
     end
   end
   def show

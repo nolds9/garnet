@@ -7,11 +7,9 @@ class Assignment < ActiveRecord::Base
 
   def create_submissions
     group = Group.find(self.group_id)
-
     students = group.memberships.where(is_admin?: false)
-
     students.each do |student|
-      student.submitted_submissions.create(assignment_id: self.id, status: "incomplete")
+      student.submissions.create(assignment_id: self.id, status: "incomplete")
     end
 
   end
