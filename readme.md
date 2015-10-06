@@ -59,8 +59,9 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
 
 - `Group.bulk_create`: creates a tree of groups (nested groups)
 - `Group.named`: short for `Group.find_by(title: )`
-- `@group.all_subgroups`: returns a single-level array of all subgroups nested under this group
+- `@group.subgroup_array`: returns a single-level array of all subgroups nested under this group
 - `@group.subgroup_tree`: returns a nested hash of all subgroups nested under this group
+- `@group.get_subgroups(key)`: for example, `@group.get_subgroups("attendances")`. Imagine there's an apostrophe at the end of `subgroups`.
 
 ## User stories
 
