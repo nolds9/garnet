@@ -106,10 +106,16 @@ class UsersController < ApplicationController
       @user = User.find_by(github_id: gh_user["id"])
     else
       @user = User.create!(gh_params)
+      session[:user] = @user
+      redirect_to action: "welcome" and return
     end
     @user.update!(gh_params)
     session[:user] = @user
     redirect_to :root
+  end
+
+  def welcome
+    @user = current_user
   end
 
   private

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/sign_up', to: 'users#sign_up'
   post '/sign_up', to: 'users#sign_up!'
   get '/sign_out', to: 'users#sign_out'
+  get '/welcome', to: 'users#welcome'
   # students submissions end-point
   get 'api/memberships/:id/submissions', to: "submissions_api#index"
 
