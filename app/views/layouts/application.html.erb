@@ -9,21 +9,31 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <div class='cf'>
+  <header>
     <h1 class='logo'>
-      <% if @group %>
-	<a href="/groups/<%= @group.id %>">
-      <% else %>
-	<a href="/">
-      <% end %>
-        <span>GA</span>rNET
-      </a>
-      <a href="https://github.com/ga-dc/garnet" target="_blank"><i class="fa fa-code-fork"></i></a>
+      <a href="/profile"><span style="color:red;">ga</span>rnet</a>
     </h1>
-    <%= render "users/auth_nav" %>
-  </div>
-
-<%= yield %>
+    <nav>
+      <% if current_user %>
+      <a href="/profile"><%= current_user.username %></a>
+      <a href="/sign_out">sign out</a>
+      <% else %>
+      <a href="/sign_up">Sign up</a>
+      <a href="/sign_in">Sign in</a>
+      <% end %>
+    </nav>
+  </header>
+  <main>
+    <div class="errareHumanumEst">
+    <% flash.each do |key, value| %>
+      <p><%= value %></p>
+    <% end %>
+    </div>
+    <%= yield %>
+  </main>
+  <footer>
+    <a href="https://github.com/ga-dc/garnet" target="_blank">Github</a>
+  </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js" charset="utf-8">
   </script>
 </body>
