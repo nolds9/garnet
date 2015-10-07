@@ -27,8 +27,8 @@ class Membership < ActiveRecord::Base
     array.each do |person|
       user = User.find_by(username: person[0])
       if(!user)
-        user = User.sign_up(person[0], person[1])
-        user.save
+        user = User.new.save_params({"username" => person[0], "password" => person[1]})
+        user.save!
       end
       user.memberships.create(group_id: group_id, is_admin?: is_admin)
     end
