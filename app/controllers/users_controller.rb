@@ -31,7 +31,7 @@ class UsersController < ApplicationController
 
   def sign_up
     if current_user
-      redirect_to :show
+      redirect_to :profile
     end
   end
 
