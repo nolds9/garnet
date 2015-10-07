@@ -1,0 +1,9 @@
+#observation_status{
+  display: block;
+  width: 100%;
+}
+
+#observation_body{
+  @extend #observation_status; // TODO jsm: Use mixin instead
+  height: 10em;
+}

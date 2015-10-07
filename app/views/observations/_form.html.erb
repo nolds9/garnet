@@ -1,7 +1,7 @@
 <%= form_for [group, student, observation] do |f| %>
  <%= f.label :status %>
- <%= f.text_field :status %>
+ <%= f.select :status, options_for_select([['Red', 0], ['Yellow', 1], ['Green', 2]]) %>
  <%= f.label :body %>
- <%= f.text_field :body %>
+ <%= f.text_area :body %>
  <%= f.submit %>
 <% end %>
