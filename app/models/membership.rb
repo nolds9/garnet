@@ -18,7 +18,7 @@ class Membership < ActiveRecord::Base
     membership = Membership.find_by(
       user_id: user.id,
       group_id: group.id,
-      is_admin?: is_admin
+      is_admin: is_admin
     )
     return membership
   end
@@ -30,7 +30,7 @@ class Membership < ActiveRecord::Base
         user = User.new.save_params({"username" => person[0], "password" => person[1]})
         user.save!
       end
-      user.memberships.create(group_id: group_id, is_admin?: is_admin)
+      user.memberships.create(group_id: group_id, is_admin: is_admin)
     end
   end
 
@@ -50,7 +50,7 @@ class Membership < ActiveRecord::Base
 
   def minions
     group = self.group
-    group.memberships.where(is_admin?: false)
+    group.memberships.where(is_admin: false)
   end
 
   def get_subgroups key = nil

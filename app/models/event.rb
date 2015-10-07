@@ -7,7 +7,7 @@ class Event < ActiveRecord::Base
   def create_attendances
     group = Group.find(self.group_id)
 
-    students = group.memberships.where(is_admin?: false)
+    students = group.memberships.where(is_admin: false)
 
     students.each do |student|
       student.attendances.create(event_id: self.id)
