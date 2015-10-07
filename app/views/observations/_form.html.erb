@@ -1,6 +1,6 @@
-<%= form_for [group, student, observation] do |f| %>
+<%= form_for [group, membership, observation] do |f| %>
  <%= f.label :status %>
- <%= f.text_field :status %>
+ <%= f.select :status, Observation.statuses %>
  <%= f.label :body %>
  <%= f.text_field :body %>
  <%= f.submit %>

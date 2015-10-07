@@ -1,18 +1,15 @@
-<div class='dashboard'>
-  <h2><%= breadcrumbs(@group) %></h2>
-  <h2><%= link_to "Assignments", group_assignments_path(@group) %> </h2>
-  <h2>
-    <%= form_for [@group, @event] do |f| %>
-      <%= f.submit :"Take today's attendance." %>
+<h2><%= breadcrumbs(@group) %></h2>
+
+<section>
+  <h3>Owners</h3>
+  <ul>
+    <% @admins.each do |user| %>
+    <li><%= link_to user.username, profile_path(user) %></li>
     <% end %>
-  </h2>
-  <h2><%= link_to "Students", group_students_path(@group) %></h2>
-</div>
-<ul><%= subgroup_tree_html(@group) %></ul>
-<script charset="utf-8">
-  $(".cohort-select").change(function(){
-    var newGroupId =  $("option:selected").attr("value")
-    location.href= "/groups/" + newGroupId
-  })
-</script>
-<%= javascript_include_tag 'application' %>
+  </ul>
+</section>
+
+<section>
+  <h3>Subgroups</h3>
+  <ul><%= subgroup_tree_html(@group) %></ul>
+</section>
