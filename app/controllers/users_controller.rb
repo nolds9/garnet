@@ -113,7 +113,11 @@ class UsersController < ApplicationController
       @user.update!(gh_params)
       session[:user] = @user
     end
-    redirect_to :root
+    redirect_to action: "welcome"
+  end
+
+  def welcome
+    @user = current_user
   end
 
   private
