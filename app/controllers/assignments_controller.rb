@@ -2,6 +2,7 @@ class AssignmentsController < ApplicationController
 
   def index
     @group = Group.find(params[:group_id])
+    @user = current_user
     @assignment = Assignment.new
     @assignments = @group.get_subgroups("assignments")
   end

@@ -1,12 +1,14 @@
 <h2><%= breadcrumbs(@group) %></h2>
 
 <h2>Assignments</h2>
+<% if @user.is_member_of(@group, true) %>
 <%= form_for [@group, @assignment] do |f| %>
   <%= f.text_field :title, placeholder: "Title" %>
   <%= f.select :category, [["homework","homework"],["outcomes","outcomes"],["project","project"]] %>
   <%= f.text_field :repo_url, placeholder: "Repo Url"%>
   <%= f.date_field :due_date %>
   <%= f.submit %>
+<% end %>
 <% end %>
 <table class="tablesorter">
   <tr>

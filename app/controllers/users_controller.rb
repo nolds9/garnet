@@ -5,6 +5,8 @@ class UsersController < ApplicationController
   def show
     @user = User.find_by(username: (params[:user] || current_user.username))
     @is_current_user = (@user.id == current_user.id)
+    @memberships = @user.memberships
+    @groups = @memberships.map{|membership| membership.group}
   end
 
   def update

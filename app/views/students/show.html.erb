@@ -1,9 +1,13 @@
-<h2><%= breadcrumbs(@group) %></h2>
-<h2><%= @student.name %></h2>
-<h3>New Observation</h3>
-<%= render partial: "observations/form", locals: {group: @group, student: @student, observation: @observation} %>
+<h2><%= breadcrumbs(@group, @user) %></h2>
 
-<h3>All Observations</h3>
-<% @student.student_observations.each do |observation| %>
-  <%= render partial: "observations/show", locals: {observation: observation} %>
-<% end %>
+<section>
+  <h3>New Observation</h3>
+  <%= render partial: "observations/form", locals: {group: @group, membership: @membership, observation: @observation} %>
+</section>
+
+<section>
+  <h3>All Observations</h3>
+  <% @student[:student_observations].each do |observation| %>
+    <%= render partial: "observations/show", locals: {observation: observation} %>
+  <% end %>
+</section>
