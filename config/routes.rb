@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
   root to: 'application#welcome'
 
+  get "/profile", to: "users#show"
+  post "/profile", to: "users#update"
+  delete "/profile/delete", to: "users#delete"
+
   get '/sign_in', to: 'users#sign_in'
   post '/sign_in', to: 'users#sign_in!'
   get '/sign_up', to: 'users#sign_up'
   post '/sign_up', to: 'users#sign_up!'
   get '/sign_out', to: 'users#sign_out'
+  get '/welcome', to: 'users#welcome'
   # students submissions end-point
   get 'api/memberships/:id/submissions', to: "submissions_api#index"
 
@@ -20,9 +25,21 @@ Rails.application.routes.draw do
 
   patch 'update_attendance', to: "attendances_api#update"
 
-  resources :events
+  get "/report_card/:id", to: 'groups#report_card'
+
   resources :groups do
-    resources :assignments
+    resources :events do
+      resources :attendances
+    end
+    resources :assignments do
+      resources :submissions
+    end
+    resources :memberships do
+      resources :observations
+    end
+    resources :students do
+      resources :observations
+    end
   end
 
 end

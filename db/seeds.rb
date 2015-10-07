@@ -1,23 +1,51 @@
-User.destroy_all
+Assignment.destroy_all
+Attendance.destroy_all
+Event.destroy_all
 Group.destroy_all
 Membership.destroy_all
 Observation.destroy_all
-Event.destroy_all
-Assignment.destroy_all
+Submission.destroy_all
+User.destroy_all
 
-WDI = Group.create(title: "WDI7")
-wdi = {
-  instructors: {},
-  students: {}
+groups = {
+  "ga": {
+    "wdi": {
+      "dc": {
+        "wdidc5": {
+          "classroom1": {
+          },
+          "classroom2": {
+          }
+        },
+        "wdidc6": {
+          "milk": {
+          },
+          "cookies": {
+          }
+        },
+        "wdidc7": {
+          "classroom1": {
+          },
+          "classroom3": {
+          },
+          "classroom4": {
+          }
+        }
+      }
+    }
+  }
 }
 
-WDI8 = Group.create(title: "WDI8")
-wdi8 = {
-  instructors: {},
-  students: {}
-}
+instructors6 = [
+  ["robin", "thomas"],
+  ["andy", "kim"],
+  ["adam", "bray"],
+  ["matt", "scilipoti"],
+  ["jesse", "shawl"],
+  ["adrian", "maseda"]
+]
 
-instructors = [
+instructors7 = [
   ["robin", "thomas"],
   ["andy", "kim"],
   ["nick", "olds"],
@@ -29,46 +57,60 @@ instructors = [
   ["adrian", "maseda"]
 ]
 
-instructors.each do |instructor|
-  instructor = User.sign_up(instructor[0], instructor[1])
-  instructor.save
-  membership = instructor.memberships.create(group_id: WDI.id, is_admin?: true)
-  wdi[:instructors][instructor.username] = membership
-  membership8 = instructor.memberships.create(group_id: WDI8.id, is_admin?: true)
-  wdi8[:instructors][instructor.username] = membership8
-end
-
-students = [
+students6 = [
   ["jane", "doe"],
   ["joe", "smith"],
   ["kareem", "abdul-jabaar"],
   ["dikembe", "muotumbo"]
 ]
 
-students.each do |student|
-  student = User.sign_up(student[0], student[1])
-  student.save
-  membership = student.memberships.create(group_id: WDI.id, is_admin?: false)
-  wdi[:students][student.username] = membership
-end
-
-students8 = [
-  ["big", "bird"],
-  ["oscar", "grouch"],
-  ["cookie", "monster"]
+students7 = [
+  ["harry", "potter"],
+  ["hermione", "granger"],
+  ["ron", "weasley"]
 ]
 
-students8.each do |student|
-  student = User.sign_up(student[0], student[1])
-  student.save
-  membership = student.memberships.create(group_id: WDI8.id, is_admin?: false)
-  wdi8[:students][student.username] = membership
+
+Group.bulk_create(groups)
+
+Membership.bulk_create(instructors6, Group.named("wdidc6").id, true)
+Membership.bulk_create(students6, Group.named("wdidc6").id, false)
+Membership.bulk_create(students6, Group.named("milk").id, false)
+
+Membership.bulk_create(instructors7, Group.named("wdidc7").id, true)
+Membership.bulk_create(students7, Group.named("wdidc7").id, false)
+
+robin = User.named("robin")
+jesse = User.named("jesse")
+andy = User.named("andy")
+jane = User.named("jane")
+
+robin.role("wdidc6", "admin").observe("jane", "Jane is cool. A+", 2)
+robin.role("wdidc6", "admin").observe("jane", "Jane is no longer cool", 0)
+jesse.role("wdidc6", "admin").observe("jane", "Jane smells", 1)
+andy.role("wdidc6", "admin").observe("jane", "Basically wrote Facebook for final project", 2)
+robin.role("wdidc6", "admin").observe("joe", "Joe is lame. F-", 0)
+jesse.role("wdidc6", "admin").observe("joe", "Joe bribed me with donuts", 1)
+robin.role("wdidc6", "admin").observe("dikembe", "Dikembe has a cool name. C-", 1)
+
+Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 16))
+Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 17))
+Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 16))
+Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 17))
+
+Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
+Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
+Group.named("milk").assignments.create(due_date: DateTime.new(2015, 10, 15), category: "homework", title: "Some homework")
+Group.named("cookies").assignments.create(due_date: DateTime.new(2015, 10, 14), category: "homework", title: "HW for Cookies")
+
+jane.role("wdidc6", "student").submissions.each_with_index do |submission, i|
+  submission.update(status: rand(0..2))
 end
 
-wdi[:instructors]["robin"].authored_observations.create!(observee_id: wdi[:students]["jane"].id, body: "Jane is cool. A+")
+jane.role("milk", "student").submissions.each_with_index do |submission, i|
+  submission.update(status: rand(0..2))
+end
 
-day_one = WDI.events.create(date: DateTime.new(2015, 10, 16))
-day_two = WDI.events.create(date: DateTime.new(2015, 10, 17))
-
-assignment = WDI.assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
-assignment_two = WDI.assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
+jane.role("wdidc6", "student").attendances.each_with_index do |attendance, i|
+  attendance.update(status: rand(0..2))
+end

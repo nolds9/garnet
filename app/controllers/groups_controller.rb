@@ -1,32 +1,39 @@
 class GroupsController < ApplicationController
+  # before_action :check_for_single_group, only: [:index]
 
   def index
-    category = params[:category]
-    if category
-      @groups = Group.find_by(category: category)
-    else
-      @groups = Group.all
-    end
-    render "index"
+  end
+
+  def admin_dashboard group
+    @group = group
+    @students = @group.members(is_admin: false)
+    @memberships_in_group = @group.memberships
+    @users_in_group = @memberships_in_group.map{|membership|membership.user}
+    @users_in_group_ids = @users_in_group.map{|user|user.id}
+    @users = User.all
+    @users_not_in_group = @users.where.not(id: @users_in_group_ids)
+    @membership = @group.memberships.new
+    render "admin_dashboard"
+  end
+
+  def report_card group, user
+    @user = user
+    @group = group
+    @student = @user.memberships.find_by(group_id: @group.id)
+    @attendances = @student.get_subgroups("attendances")
+    @submissions = @student.get_subgroups("submissions")
+    render "report_card"
   end
 
   def show
     @group = Group.find(params[:id])
-    # TODO:Exract these into helper methods for use throughout the application
-    @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
-    student_id_array = @student_memberships.map(&:user_id)
-    @students = student_id_array.map do |id|
-      User.find(id)
+    if @group.memberships.exists?(user_id: current_user.id, is_admin: true)
+      admin_dashboard(@group)
+    elsif @group.memberships.exists?(user_id: current_user.id)
+      report_card(@group, current_user)
+    else
+      @admins = @group.memberships.where(is_admin: true).map{|m| m.user}
     end
-
-    @instructor_memberships = current_user.memberships
-    puts current_user.memberships
-    group_id_array = @instructor_memberships.map(&:group_id)
-    @groups = group_id_array.map do |id|
-      Group.find(id)
-    end
-
-    render "show"
   end
 
   def new
@@ -70,6 +77,12 @@ class GroupsController < ApplicationController
   private
     def group_params
       params.require(:group).permit(:title, :category)
+    end
+
+    def check_for_single_group
+      if current_user.groups.length == 1
+        redirect_to action: 'report_card', id: current_user.groups[0].id
+      end
     end
 
 end

@@ -1,49 +1,15 @@
-<a href='#' class='toggle-grayscale js-toggle-grayscale'>&#9728;</a>
+<h2><%= breadcrumbs(@group) %></h2>
 
-<header>
-  <small>Logged in as <%= current_user.username %>
-  | <%= link_to "Recent", "/recent" %>
-  | <%= link_to "Stats", "/stats" %>
-  </small>
-  <h1>
-    <%= link_to "~/", root_path %>
-    <% if @students %>
-      <input type="text" class="js-filter">
+<section>
+  <h3>Owners</h3>
+  <ul>
+    <% @admins.each do |user| %>
+    <li><%= link_to user.username, profile_path(user) %></li>
     <% end %>
-  </h1>
-  <select class="cohort-select">
-    <% if @groups %>
-      <% @groups.each do |group| %>
-        <option value="<%=group.id%>" <%if group.id == @group.id%> selected <%end%>>
-          <%= group.title %>
-        </option>
-      <% end %>
-    <% end %>
-  </select>
-</header>
-<!-- Something about squads -->
-<div class='student-list js-student-list'>
-  <% if @students %>
-    <% @students.each do |student| %>
-      <p style="background: student.observations.status" class="<%#= student.squad %> <%#= student.category %>">
-        <a href="/<%= student.github_id %>"><%= student.username %>
-          <%#= "Absences: #{student.absences}" %><%#= "Tardies: #{student.tardies}" %><%#= "Total: #{student.combined_absence}" %><%#= "Percent: #{student.percent_complete}" %>
-          <p><%#= @studentObservations %></p>
-          <% if student.updated_at %>
-    	      <small><%= time_ago_in_words(student.updated_at) %> ago</small>
-          <% end %>
-        </a>
-        <%# gh_img = student.color ? "GitHub-Mark-Light-32px" : "GitHub-Mark-32px" %>
-        <%#= link_to(image_tag(gh_img, alt: "GH Repos", title: "GH Repos"), student.github_repo_url) %>
-      </p>
-    <% end %>
-  <% end %>
-</div>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
-<script charset="utf-8">
-  $(".cohort-select").change(function(){
-    var newGroupId =  $("option:selected").attr("value")
-    location.href= "/groups/" + newGroupId
-  })
-</script>
-<%= javascript_include_tag 'application' %>
+  </ul>
+</section>
+
+<section>
+  <h3>Subgroups</h3>
+  <ul><%= subgroup_tree_html(@group) %></ul>
+</section>

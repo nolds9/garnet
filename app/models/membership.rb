@@ -2,62 +2,70 @@ class Membership < ActiveRecord::Base
   belongs_to :group
   belongs_to :user
   has_many :attendances
-  has_many :authored_observations, :class_name => 'Observation', :foreign_key => 'author_id' # as author
-  has_many :student_observations, :class_name => 'Observation', :foreign_key => 'observee_id'# as observee
-  has_many :graded_submissions, :class_name => 'Submission', :foreign_key => 'grader_id' # as instructor
-  has_many :submitted_submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'# as student submitter
+  has_many :authored_observations, :class_name => 'Observation', :foreign_key => 'author_id'
+  has_many :student_observations, :class_name => 'Observation', :foreign_key => 'observee_id'
+  has_many :grades, :class_name => 'Submission', :foreign_key => 'grader_id'
+  has_many :submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'
 
-  def get_attendance_summary
-    attendances = self.attendances
-
-    tardys = attendances.where(status: "tardy").length
-    presents = attendances.where(status: "present").length
-    absents = attendances.where(status: "absent").length
-
-    return {
-      membership_id: self.id,
-      tardys: tardys,
-      presents: presents,
-      absents: absents
-    }
+  def self.in_role(name, group_title, is_admin = false)
+    if is_admin == "admin"
+      is_admin = true
+    elsif is_admin == "student"
+      is_admin = false
+    end
+    user = User.find_by(username: name)
+    group = Group.find_by(title: group_title)
+    membership = Membership.find_by(
+      user_id: user.id,
+      group_id: group.id,
+      is_admin: is_admin
+    )
+    return membership
   end
 
-  def get_submission_summary
-    # summary = {
-    #   membership_id: self.id,
-    #   incompletes: 0,
-    #   missings: 0,
-    #   completes: 0
-    # }
-    # self.submitted_submissions.each do |submission|
-    #   if submission.assignment.category != "project"
-    #     binding.pry
-    #     if submission.status == "incomplete"
-    #       summary[:incompletes] += 1
-    #     elsif submission.status == "complete"
-    #       summary[:completes] += 1
-    #     elsif submission.status == "missing"
-    #       summary[:missings] += 1
-    #     end
-    #   end
-    # end
-    #
-    # return summary
+  def self.bulk_create(array, group_id, is_admin)
+    array.each do |person|
+      user = User.find_by(username: person[0])
+      if(!user)
+        user = User.new.save_params({"username" => person[0], "password" => person[1]})
+        user.save!
+      end
+      user.memberships.create(group_id: group_id, is_admin: is_admin)
+    end
+  end
 
-    # TODO need a way to filter out projects
-    submissions = self.submitted_submissions
+  def name
+    self.user.username
+  end
 
-    incompletes = submissions.where(status: "incomplete").length
-    missings = submissions.where(status: "missing").length
-    completes = submissions.where(status: "complete").length
+  def observe name, body, color
+    observee = User.find_by(username: name)
+    observee_m = self.group.memberships.find_by(user_id: observee.id)
+    self.authored_observations.create!(observee_id: observee_m.id, body: body, status: color )
+  end
 
-    return summary = {
-      membership_id: self.id,
-      incompletes: incompletes,
-      missings: missings,
-      completes: completes
-    }
+  def last_observation
+    self.student_observations.last
+  end
 
+  def minions
+    group = self.group
+    group.memberships.where(is_admin: false)
+  end
+
+  def get_subgroups key = nil
+    self_result = self.send(key)
+    collection = [self_result]
+    add_method = "push"
+    if self_result.respond_to? "merge"
+      collection = self_result
+      add_method = "concat"
+    end
+    self.group.get_subgroups("memberships").each do |membership|
+      next if membership.user.id != self.user.id
+      collection.send(add_method, membership.send(key))
+    end
+    return collection
   end
 
 end

@@ -1,10 +1,11 @@
 <%# meta title: @assignment %>
-<h1>
-  <%= link_to_if @assignment.repo_url.present?, @assignment.title, @assignment.repo_url %>
-  <span>(<%= "#{@assignment.summary_info.join(", ")})" %></span>
-</h1>
+<%= breadcrumbs(@assignment.group) %>
+<h2><%= @assignment.title %></h2>
+<p><%= link_to_if @assignment.repo_url.present?, @assignment.repo_url, @assignment.repo_url %>
 
-<% if session[:token] %>
+<p>(<%= "#{@assignment.summary_info.join(", ")})" %></p>
+
+<% if current_user.is_member_of(@assignment.group, true) %>
   <%= link_to "edit", edit_assignment_path(@assignment)%>
   <%= link_to 'delete', assignment_path(@assignment), method: :delete, data: {confirm: "Are you sure?"} %>
 <% end %>
@@ -14,8 +15,12 @@
   <%#= link_to squad, assignment_path(@assignment) + "?squad=#{squad.downcase}" %>
 <%# end %>
 </div>
-<h2>Submissions</h2>
 
+<% if current_user.is_member_of(@assignment.group, true) %>
+<section>
+<h3>Submissions</h3>
 <table>
-  <%= render 'submissions' %>
+  <%= render partial: 'submissions', collection: @assignment.submissions, as: :submission %>
+  <% end %>
 </table>
+</section>

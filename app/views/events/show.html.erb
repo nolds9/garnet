@@ -1,37 +1,23 @@
-<h2><%= @event.date %></h2>
+<h3><%= @event.date.strftime("%A, %B %e, %Y") %></h3>
 <div class="students">
   <% @attendances.each do |attendance| %>
-    <div class="student">
+    <div class="student attendance">
+      <img src='<%= attendance.membership.user.image_url %>'>
       <h3><%= attendance.membership.user.username %></h3>
-      <form class="entry" method="post" class="student">
-        <input type="hidden" value="<%= attendance.id %>" id="attendance_id">
-        <div class='status'>
-          <% if attendance.status == "present" %>
-            <input type="radio" name="status" value="present" checked=true>
-            Present
-          <% else %>
-            <input type="radio" name="status" value="present">
-            Present
-          <% end %>
-
-          <% if attendance.status == "tardy" %>
-            <input type="radio" name="status" value="tardy" checked=true>
-            Tardy
-          <% else %>
-            <input type="radio" name="status" value="tardy">
-            Tardy
-          <% end %>
-
-          <% if attendance.status == "absent" %>
-            <input type="radio" name="status" value="absent" checked=true>
-            Absent
-          <% else %>
-            <input type="radio" name="status" value="absent">
-            Absent
-          <% end %>
-          
-        </div>
-      </form>
+      <%= form_for [@group, @event, attendance] do |f| %>
+        <label>
+	  Present
+	  <%= f.radio_button :status, "Present" %>
+	</label>
+        <label>
+	  Tardy
+	  <%= f.radio_button :status, "Tardy" %>
+	</label>
+        <label>
+	  Absent
+	  <%= f.radio_button :status, "Absent" %>
+	</label>
+      <% end %>
     </div>
   <% end %>
 </div>

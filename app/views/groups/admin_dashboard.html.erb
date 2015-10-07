@@ -1,0 +1,59 @@
+<h2><%= breadcrumbs(@group) %></h2>
+
+<ul>
+  <li><%= link_to "Assignments", group_assignments_path(@group) %></li>
+  <li><%= link_to "Today's attendance", group_events_path(@group), method: :post %></li>
+</ul>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th colspan="4">Submissions</th>
+    <th colspan="4">Attendance</th>
+    <th colspan="4">Observations</th>
+  </tr>
+  <tr>
+    <th></th>
+    <th></th>
+    <% 3.times do %>
+    <th title="Average number of points">Avg Pts</th>
+    <th title="Total number of points">Tot Pts</th>
+    <th title="Percent that have a value of 2">Pct OK</th>
+    <th title="Total in which it was possible to get 2">Tot Poss</th>
+    <% end %>
+  </tr>
+<% @students.each do |id, student| %>
+  <tr>
+    <td><%= avatar(student[:user]) %></td>
+    <th><%= link_to student[:user].username, group_student_path(@group.id, id) %></th>
+    <% [:submissions, :attendances, :student_observations].each do |datum| %>
+      <%= render partial: "students/data", locals: {collection: student[datum]} %>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<h3>Users Not In This Group</h3>
+<% @users_not_in_group.each do |user| %>
+  <p>
+    <%= user.username %>
+    <%= form_for [@group, @membership] do |f| %>
+      <%= f.hidden_field :user_id, value: user.id %>
+      <%= f.label :is_admin %>
+      <%= f.check_box :is_admin %>
+      <%= f.submit%>
+    <% end %>
+  </p>
+<% end %>
+
+<ul>
+<%=h subgroup_tree_html(@group) %>
+</ul>
+
+<script charset="utf-8">
+  $(".cohort-select").change(function(){
+    var newGroupId =  $("option:selected").attr("value")
+    location.href= "/groups/" + newGroupId
+  })
+</script>
