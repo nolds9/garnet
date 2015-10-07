@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root to: 'application#welcome'
 
+  get "/profile", to: "users#show"
+  post "/profile", to: "users#update"
+  delete "/profile/delete", to: "users#delete"
+
   get '/sign_in', to: 'users#sign_in'
   post '/sign_in', to: 'users#sign_in!'
   get '/sign_up', to: 'users#sign_up'
@@ -21,8 +25,6 @@ Rails.application.routes.draw do
   patch 'update_attendance', to: "attendances_api#update"
 
   get "/report_card/:id", to: 'groups#report_card'
-
-  get "/groups/tree", to: "groups#tree"
 
   resources :groups do
     resources :events do

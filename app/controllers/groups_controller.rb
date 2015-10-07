@@ -1,48 +1,33 @@
 class GroupsController < ApplicationController
   # before_action :check_for_single_group, only: [:index]
 
-  def tree
-  end
-
   def index
-    @memberships = current_user.memberships
-    @admin_memberships = @memberships.where(is_admin?: true)
-    @non_admin_memberships = @memberships.where(is_admin?: false)
-    @admin_groups = @admin_memberships.map{|membership| membership.group}
-    @non_admin_groups = @non_admin_memberships.map{|membership| membership.group}
-    render "index"
   end
 
-  def report_card
-    membership = Membership.find_by(group_id: params[:id], user_id: current_user.id)
-    @attendance_summary = membership.get_attendance_summary
-    @attendances = Attendance.where(membership_id: membership.id)
-    @tardies = @attendances.where(status: "tardy")
-    @absences = @attendances.where(status: "absent")
+  def admin_dashboard group
+    @group = group
+    @students = @group.members(is_admin?: false)
+    render "admin_dashboard"
+  end
 
-    @submission_summary = membership.get_submission_summary
-    @missing_submissions = Submission.where(submitter_id: membership.id, status: "incomplete")
-    @missing_assignments = @missing_submissions.map{|submission| submission.assignment }
-
+  def report_card group, user
+    @user = user
+    @group = group
+    @student = @user.memberships.find_by(group_id: @group.id)
+    @attendances = @student.get_subgroups("attendances")
+    @submissions = @student.get_subgroups("submissions")
+    render "report_card"
   end
 
   def show
     @group = Group.find(params[:id])
-    @event = Event.new
-    # TODO:Exract these into helper methods for use throughout the application
-    @student_memberships = Membership.where(is_admin?: false, group_id: @group.id)
-    student_id_array = @student_memberships.map(&:user_id)
-    @students = student_id_array.map do |id|
-      User.find(id)
+    if @group.memberships.exists?(user_id: current_user.id, is_admin?: true)
+      admin_dashboard(@group)
+    elsif @group.memberships.exists?(user_id: current_user.id)
+      report_card(@group, current_user)
+    else
+      @admins = @group.memberships.where(is_admin?: true).map{|m| m.user}
     end
-
-    @instructor_memberships = current_user.memberships
-    group_id_array = @instructor_memberships.map(&:group_id)
-    @groups = group_id_array.map do |id|
-      Group.find(id)
-    end
-
-    render "show"
   end
 
   def new

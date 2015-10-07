@@ -1,30 +1,15 @@
-<div class='dashboard'>
-  <h2><%= @group.title %> <%= breadcrumbs(@group) %></h2>
-  <h2><%= link_to "Assignments", group_assignments_path(@group) %> </h2>
-  <h2>
-    <%= form_for [@group, @event] do |f| %>
-      <%= f.submit :"Take today's attendance." %>
+<h2><%= breadcrumbs(@group) %></h2>
+
+<section>
+  <h3>Owners</h3>
+  <ul>
+    <% @admins.each do |user| %>
+    <li><%= link_to user.username, profile_path(user) %></li>
     <% end %>
-  </h2>
-  <h2><%= link_to "Observations", group_students_path(@group) %></h2>
-</div>
-<h3>Observations</h3>
-<% @student_memberships.each do |membership| %>
-  <div style="background-color: <%= membership.color %>">
-    <p><%= link_to membership.user.username, group_membership_path( @group, membership ) %></p>
-    <p>Combined Absences: <%= membership.get_attendance_summary[:combined_absences] %> days</p>
-    <p>Homework Submissions: <%= membership.get_submission_summary[:percentage] %>%</p>
-    <% if membership.last_observation %>
-      <p><%= time_ago_in_words( membership.last_observation.updated_at ) + " ago." %></p>
-    <% end %>
-  </div>
-<% end %>
-<ul><%= subgroup_tree_html(@group) %></ul>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
-<script charset="utf-8">
-  $(".cohort-select").change(function(){
-    var newGroupId =  $("option:selected").attr("value")
-    location.href= "/groups/" + newGroupId
-  })
-</script>
-<%= javascript_include_tag 'application' %>
+  </ul>
+</section>
+
+<section>
+  <h3>Subgroups</h3>
+  <ul><%= subgroup_tree_html(@group) %></ul>
+</section>

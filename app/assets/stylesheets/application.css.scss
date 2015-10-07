@@ -15,12 +15,20 @@
  *= require font-awesome
  */
 
+*{
+  box-sizing: border-box;
+}
+
 html{
   background: #eee;
   padding:2em;
+  @media all and (max-width:40em){
+    padding:.5em;
+  }
 }
 
 body{
+  width:100%;
   max-width: 60em;
   margin:auto;
   font-family: 'Merriweather', Georgia, serif;
@@ -28,6 +36,9 @@ body{
   border-radius: 5px;
   border: 1px solid #ddd;
   padding:2em;
+  @media all and (max-width:40em){
+    padding:1em;
+  }
   box-shadow:5px 5px 0 #ccc;
 }
 
@@ -61,7 +72,11 @@ nav{
 }
 
 .dashboard {
-  h2{}
+  h2{
+    @media all and(max-width:40em){
+      font-size:1em;
+    }
+  }
   input[type="submit"]{
     background: none;
     border:none;
@@ -70,4 +85,8 @@ nav{
     cursor: pointer;
     padding:0;
   }
+}
+
+.avatar{
+  width:100px;
 }

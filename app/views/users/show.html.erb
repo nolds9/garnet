@@ -1,0 +1,25 @@
+<%= avatar(@user) %>
+<h2 title="user#<%= @user.id %>"><%= @user.username %></h2>
+
+<% if @is_current_user %>
+<section>
+  <h3>Options</h3>
+  <ul>
+    <% if !@user.github_id %>
+    <li><a href="/github/authorize">Link your Github account</a></li>
+    <li><%= render partial: "form", locals: {action: "/profile", user: current_user} %></li>
+    <% end %>
+
+    <!--<li><%# link_to "Delete your account", profile_delete_path, data: {confirm: "You sure?"}, method: :delete %></li>-->
+  </ul>
+</section>
+<% end %>
+
+<section>
+  <h3>Groups</h3>
+  <ul>
+  <% @groups.each do |group| %>
+    <li><%= breadcrumbs(group) %> <%= "(admin)" if group.memberships.exists?(user_id: @user.id, is_admin?: true) %></li>
+  <% end %>
+  </ul>
+</section>
