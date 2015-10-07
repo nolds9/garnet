@@ -100,15 +100,19 @@ class UsersController < ApplicationController
       name: gh_user["name"],
       email: gh_user["email"]
     }
-    if current_user
-      @user = current_user
-    elsif User.exists?(github_id: gh_user["id"])
-      @user = User.find_by(github_id: gh_user["id"])
+    if current_user && User.exists?(username: gh_user["login"])
+      flash[:alert] = "Another user already exists with that username. Please delete that user and try again."
     else
-      @user = User.create!(gh_params)
+      if current_user
+        @user = current_user
+      elsif User.exists?(username: gh_user["login"])
+        @user = User.find_by(github_id: gh_user["id"])
+      else
+        @user = User.create!(gh_params)
+      end
+      @user.update!(gh_params)
+      session[:user] = @user
     end
-    @user.update!(gh_params)
-    session[:user] = @user
     redirect_to :root
   end
 

@@ -10,7 +10,7 @@
     <li><%= render partial: "form", locals: {action: "/profile", user: current_user} %></li>
     <% end %>
 
-    <!--<li><%# link_to "Delete your account", profile_delete_path, data: {confirm: "You sure?"}, method: :delete %></li>-->
+    <li><%= link_to "Delete your account", profile_delete_path, data: {confirm: "You sure?"}, method: :delete %></li>
   </ul>
 </section>
 <% end %>
