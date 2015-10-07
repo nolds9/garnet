@@ -71,12 +71,18 @@ It's built on the Octokit gem. For more information [see the Octokit docs](https
   - `percent_of(collection, value)`: how many members of an AR collection are of a certain value
 
 - Group
-  - `breadcrumbs`: navigation breadcrumbs for the current group
+  - `breadcrumbs(group, user = nil)`: navigation breadcrumbs for a group (optionally with a user on the end)
   - `subgroup_tree_html`: nested `<ul>` of the current group and its subgroups
 
 ## User stories
 
-Should be able to...
+### Github Auth
+
+Users can sign up *with* or *without* Github.
+
+If they sign up *with* Github, they cannot update their username, password, e-mail, etc. Every time they subsequently sign in, the Github API is polled for their most recent information, and the database is updated accordingly.
+
+If they sign up *without* Github, they can update their username, password, e-mail, etc. Should they wish to later link Github to their account, they can click the "Link Github account" link, which will poll the database, rewrite their information in the Users table to use their Github username, email, etc. From there their account will behave as if they had originally signed up with Github.
 
 ### Users with an admin membership to a group
 ("The group" refers to the group and all its sub-groups)
