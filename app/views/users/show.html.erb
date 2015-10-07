@@ -19,7 +19,7 @@
   <h3>Groups</h3>
   <ul>
   <% @groups.each do |group| %>
-    <li><%= breadcrumbs(group) %> <%= "(admin)" if group.memberships.exists?(user_id: @user.id, is_admin?: true) %></li>
+    <li><%= breadcrumbs(group) %> <%= "(admin)" if group.memberships.exists?(user_id: @user.id, is_admin: true) %></li>
   <% end %>
   </ul>
 </section>

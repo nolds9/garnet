@@ -6,7 +6,13 @@ class GroupsController < ApplicationController
 
   def admin_dashboard group
     @group = group
-    @students = @group.members(is_admin?: false)
+    @students = @group.members(is_admin: false)
+    @memberships_in_group = @group.memberships
+    @users_in_group = @memberships_in_group.map{|membership|membership.user}
+    @users_in_group_ids = @users_in_group.map{|user|user.id}
+    @users = User.all
+    @users_not_in_group = @users.where.not(id: @users_in_group_ids)
+    @membership = @group.memberships.new
     render "admin_dashboard"
   end
 
@@ -21,12 +27,12 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.find(params[:id])
-    if @group.memberships.exists?(user_id: current_user.id, is_admin?: true)
+    if @group.memberships.exists?(user_id: current_user.id, is_admin: true)
       admin_dashboard(@group)
     elsif @group.memberships.exists?(user_id: current_user.id)
       report_card(@group, current_user)
     else
-      @admins = @group.memberships.where(is_admin?: true).map{|m| m.user}
+      @admins = @group.memberships.where(is_admin: true).map{|m| m.user}
     end
   end
 

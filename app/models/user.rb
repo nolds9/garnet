@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   end
 
   def is_member_of group, is_admin = false
-    group.memberships.exists?(user_id: self.id, is_admin?: is_admin)
+    group.memberships.exists?(user_id: self.id, is_admin: is_admin)
   end
 
   def save_params params
@@ -42,13 +42,13 @@ class User < ActiveRecord::Base
       is_admin = false
     end
     group = Group.find_by(title: group_title)
-    return self.memberships.find_by(group_id: group.id, is_admin?: is_admin)
+    return self.memberships.find_by(group_id: group.id, is_admin: is_admin)
   end
 
   def minions
     minions = []
     self.groups.each do |group|
-      minions.concat(group.memberships.where(is_admin?: false))
+      minions.concat(group.memberships.where(is_admin: false))
     end
     return minions
   end
