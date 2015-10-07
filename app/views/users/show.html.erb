@@ -1,11 +1,16 @@
 <%= avatar(@user) %>
-<h2><%= @user.username %></h2>
-<p>User ID <%= @user.id %></p>
+<h2 title="user#<%= @user.id %>"><%= @user.username %></h2>
+
 <% if @is_current_user %>
-  <p>This is your profile.</p>
+<section>
+  <h3>Options</h3>
+  <ul>
   <% if !@user.github_id %>
-  <p><a href="/github/authorize">Link your Github account</a></p>
+  <li><a href="/github/authorize">Link your Github account</a></li>
+  <li><%= render partial: "form", locals: {action: "/profile", user: current_user} %></li>
   <% end %>
-  <p><%= link_to "Delete your account", profile_delete_path, data: {confirm: "You sure?"}, method: :delete %></p>
-  <p>Soon: Change your password.</p>
+
+  <li><%= link_to "Delete your account", profile_delete_path, data: {confirm: "You sure?"}, method: :delete %></li>
+
+</section>
 <% end %>
