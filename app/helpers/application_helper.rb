@@ -3,6 +3,26 @@ module ApplicationHelper
     return url[(url.rindex("/") + 1)..-1] if url.include? "/"
   end
 
+  def breadcrumbs(group, user = nil)
+    output = [(link_to group.title, group_path(group))]
+    group.all_parents.each do |group|
+      output.unshift((link_to group.title, group_path(group)))
+    end
+    if user
+      output.push((link_to user.username, profile_path(user)))
+    end
+    return output.join("<").html_safe
+  end
+
+  def subgroup_tree_html(group)
+    output = "<li><a href='/groups/#{group.id}'>#{group.title}</a><ul>"
+    group.subgroups.each do |subgroup|
+      output += subgroup_tree_html(subgroup)
+    end
+    output += "</ul></li>"
+    return output.html_safe
+  end
+
   def avatar user
     if user.image_url
       "<img class='avatar' src='#{user.image_url}' alt='#{user.username}' title='#{user.username}' />".html_safe
@@ -32,9 +52,13 @@ module ApplicationHelper
     (divisor.to_f / collection.length).round(2)
   end
 
-  def markdown text
+  def markdown(text)
     markdown_to_html = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
-    markdown_to_html.render(text)
+    markdown_to_html.render(text).html_safe
+  end
+
+  def profile_path user
+    "/profile?user=#{user.username}"
   end
 
 end

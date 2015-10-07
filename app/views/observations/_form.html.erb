@@ -1,6 +1,6 @@
-<%= form_for [group, student, observation] do |f| %>
+<%= form_for [group, membership, observation] do |f| %>
  <%= f.label :status %>
- <%= f.select :status, options_for_select([['Red', 0], ['Yellow', 1], ['Green', 2]]) %>
+ <%= f.select :status, Observation.statuses %>
  <%= f.label :body %>
  <%= f.text_area :body %>
  <%= f.submit %>

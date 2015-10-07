@@ -1,4 +1,6 @@
-<h2>Student Status</h2>
+<h2><%= breadcrumbs(@group, @user) %></h2>
+
+<ul><%= subgroup_tree_html(@group) %></ul>
 
 <h3>Attendance</h3>
 <div>
@@ -25,9 +27,8 @@
 </div>
 
 <h3>Assignments</h3>
-<div>
-  <p>Incomplete: <%= @submissions.where("status <= ?", 1).length %></p>
-</div>
+<p><%= link_to "See all", group_assignments_path(@group) %></p>
+<p>Incomplete: <%= @submissions.where("status <= ?", 1).length %></p>
 <div>
   <table>
     <tr>

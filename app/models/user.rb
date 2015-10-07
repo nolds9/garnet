@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
+  def is_member_of group, is_admin = false
+    group.memberships.exists?(user_id: self.id, is_admin?: is_admin)
+  end
+
   def save_params params
     return false if self.github_id
     allowed = ["username", "email", "name", "password"]

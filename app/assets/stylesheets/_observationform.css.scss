@@ -1,9 +1,13 @@
-#observation_status{
+@mixin observation_form_fields {
   display: block;
   width: 100%;
 }
 
+#observation_status{
+  @include observation_form_fields;
+}
+
 #observation_body{
-  @extend #observation_status; // TODO jsm: Use mixin instead
+  @include observation_form_fields;
   height: 10em;
 }
