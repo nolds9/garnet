@@ -52,6 +52,11 @@ module ApplicationHelper
     (divisor.to_f / collection.length).round(2)
   end
 
+  def markdown(text)
+    markdown_to_html = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+    markdown_to_html.render(text).html_safe
+  end
+
   def profile_path user
     "/profile?user=#{user.username}"
   end
