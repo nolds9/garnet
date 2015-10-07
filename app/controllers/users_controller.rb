@@ -60,7 +60,7 @@ class UsersController < ApplicationController
     else
       @user = User.find_by(username: params[:username])
     end
-    if @user && @user.password_ok?(params[:password])
+    if @user && !@user.github_id && @user.password_ok?(params[:password])
       cookies[:username] = @user.username
       session[:user] = @user
       flash[:notice] = "You're signed in, #{@user.username}!"
@@ -91,7 +91,6 @@ class UsersController < ApplicationController
 
   def refresh_github_info
     gh_user = Github.new(ENV, session[:access_token]).api.user
-    puts gh_user.to_json
     gh_params = {
       github_id: gh_user["id"],
       username: gh_user["login"],
@@ -104,9 +103,9 @@ class UsersController < ApplicationController
     elsif User.exists?(github_id: gh_user["id"])
       @user = User.find_by(github_id: gh_user["id"])
     else
-      @user = User.create(gh_params)
+      @user = User.create!(gh_params)
     end
-    @user.update(gh_params)
+    @user.update!(gh_params)
     session[:user] = @user
     redirect_to :root
   end
