@@ -81,5 +81,3 @@ test:
 production:
   <<: *default
   database: garnet_production
-  username: garnet
-  password: <%= ENV['GARNET_DATABASE_PASSWORD'] %>
