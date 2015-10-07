@@ -85,22 +85,27 @@ If they sign up *with* Github, they cannot update their username, password, e-ma
 If they sign up *without* Github, they can update their username, password, e-mail, etc. Should they wish to later link Github to their account, they can click the "Link Github account" link, which will poll the database, rewrite their information in the Users table to use their Github username, email, etc. From there their account will behave as if they had originally signed up with Github.
 
 ### Users with an admin membership to a group
-("The group" refers to the group and all its sub-groups)
-- Assignments
+- Assignments and submissions
   - Create an assignment for the group
     - Automatically create incomplete submissions for all non-admin members of the group
   - Grade (update) a submission for the group
-- Groups
+  - Read (but not create or update) all assignments for sub-groups
+  - Read (but not create or update) all submissions for sub-groups
+- Groups and memberships
   - Create a sub-group within the group
   - Add admin memberships to the group
   - Add non-admin memberships to the group
+  - Edit memberships of the group
 - Observations
   - Create an observation for a non-admin member of the group
+  - Read (but not create or update) all observations for sub-groups
 
 ### All users
 - User info
   - Change their password, username, and name
   - Authorize their account for Github API access
+- Groups
+  - View all groups owners
 - Submissions
   - Complete a submission for an assignment (via update)
   - See submissions that they have completed
