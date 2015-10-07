@@ -29,6 +29,10 @@ class UsersController < ApplicationController
     redirect_to :root
   end
 
+  def is_authorized?
+    render json: User.exists?(username: params[:github_username])
+  end
+
   def sign_up
     if current_user
       redirect_to :profile

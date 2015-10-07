@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   post "/profile", to: "users#update"
   delete "/profile/delete", to: "users#delete"
 
+  get "/users/is_authorized", to: "users#is_authorized?"
+
   get '/sign_in', to: 'users#sign_in'
   post '/sign_in', to: 'users#sign_in!'
   get '/sign_up', to: 'users#sign_up'
