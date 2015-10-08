@@ -116,3 +116,18 @@ If they sign up *without* Github, they can update their username, password, e-ma
   - See events at which they are expected to attend
 
 ### Student
+
+```rb
+=begin
+if signed_in && gh_db && current_user.id == gh_db.id
+  current_user
+if signed_in && gh_db && current_user.id != gh_db.id
+  "error: gh account already linked"
+if signed_in && !gh_db
+  current_user
+if !signed_in && gh_db
+  gh_db_user
+if !signed_in && !gh_db
+  User.new
+=end
+```

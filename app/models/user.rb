@@ -3,6 +3,12 @@ class User < ActiveRecord::Base
   validates :github_id, allow_blank: true, uniqueness: true
   has_many :memberships
   has_many :groups, through: :memberships
+  before_save :before_save
+  attr_accessor :password
+
+  def before_save
+    self.password_digest = User.new_password(self.password)
+  end
 
   def self.named username
     User.find_by(username: username)
@@ -18,21 +24,6 @@ class User < ActiveRecord::Base
 
   def is_member_of group, is_admin = false
     group.memberships.exists?(user_id: self.id, is_admin: is_admin)
-  end
-
-  def save_params params
-    return false if self.github_id
-    allowed = ["username", "email", "name", "password"]
-    params.each do |key, value|
-      next if (!allowed.include? key)
-      next if !value || value.strip == ""
-      if key == "password"
-        key = "password_digest"
-        value = User.new_password(params["password"])
-      end
-      self.update_attribute(key, value)
-    end
-    return self
   end
 
   def role group_title, is_admin = false

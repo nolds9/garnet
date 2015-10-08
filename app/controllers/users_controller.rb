@@ -1,10 +1,19 @@
 class UsersController < ApplicationController
 
-  skip_before_action :authenticate, except: [:show]
+  skip_before_action :authenticate, except: [:profile]
 
-  def show
-    @user = User.find_by(username: (params[:user] || current_user.username))
-    @is_current_user = (@user.id == current_user.id)
+  def profile
+    if params[:user]
+      if User.exists?(username: params[:user])
+        @user = User.find_by(username: params[:user])
+      else
+        flash[:alert] = "User #{params[:user]} not found!"
+        return redirect_to "/profile"
+      end
+    else
+      @user = current_user
+    end
+    @is_current_user = (@user.id == current_user_lean["id"])
     @memberships = @user.memberships
     @groups = @memberships.map{|membership| membership.group}
   end
@@ -13,14 +22,14 @@ class UsersController < ApplicationController
     if params[:password_confirmation] != params[:password]
       flash[:alert] = "Your passwords don't match!"
     else
-      user = current_user.save_params(params)
-      if user && user.save!
+      @user = current_user
+      if @user && @user.update!(user_params)
         flash[:notice] = "Account updated!"
       else
         flash[:notice] = "Since you're using Github, you'll need to make all your changes there."
       end
     end
-    redirect_to :back
+    redirect_to action: :profile
   end
 
   def delete
@@ -31,45 +40,51 @@ class UsersController < ApplicationController
 
   def sign_up
     if current_user
-      redirect_to :show
+      redirect_to :profile
     end
   end
 
   def sign_up!
-    user = User.new
+    @user = User.new(user_params)
     if params[:password_confirmation] != params[:password]
       flash[:alert] = "Your passwords don't match!"
-      render :sign_up
-    elsif user.save_params(params).save!
-      session[:user] = user
-      flash[:notice] = "Your account has been created!"
-      sign_in!
+      render "sign_up"
+    elsif @user.save!
+      redirect_to action: :sign_in!
     else
       flash[:alert] = "Your account couldn't be created. Did you enter a unique username and password?"
-      render :sign_up
+      redirect_to action: :sign_up
     end
   end
 
   def sign_in
     if current_user
-      redirect_to :show
+      redirect_to action: :profile
     end
   end
 
   def sign_in!
-    if current_user
+    if signed_in?
       @user = current_user
-    else
-      @user = User.find_by(username: params[:username])
+    elsif params[:username]
+      if !User.exists?(username: params[:username])
+        flash[:alert] = "That user doesn't seem to exist!"
+      else
+        @user = User.find_by(username: params[:username])
+        if @user.github_id
+          return gh_authorize
+        elsif !@user.password_ok?(params[:password])
+          flash[:alert] = "Something went wrong! Is your password right?"
+          @user = false
+        end
+      end
     end
-    if @user && !@user.github_id && @user.password_ok?(params[:password])
-      cookies[:username] = @user.username
-      session[:user] = @user
+    if @user
+      set_current_user @user
       flash[:notice] = "You're signed in, #{@user.username}!"
-      redirect_to "/profile"
+      redirect_to action: :profile
     else
-      flash[:alert] = "Your password's wrong, or that user doesn't exist."
-      render :sign_in
+      render "sign_in"
     end
   end
 
@@ -77,7 +92,7 @@ class UsersController < ApplicationController
     reset_session
     message = "You're signed out!"
     flash[:notice] = message
-    redirect_to root_url
+    redirect_to :root
   end
 
   def gh_authorize
@@ -85,48 +100,30 @@ class UsersController < ApplicationController
   end
 
   def gh_authenticate
-    github_instance = Github.new(ENV)
-    github_instance.user_code = params[:code]
-    session[:access_token] = github_instance.get_access_token
-    refresh_github_info
-  end
-
-  def refresh_github_info
-    gh_user = Github.new(ENV, session[:access_token]).api.user
-    gh_params = {
-      github_id: gh_user["id"],
-      username: gh_user["login"],
-      image_url: gh_user["avatar_url"],
-      name: gh_user["name"],
-      email: gh_user["email"]
-    }
-    if current_user && User.exists?(username: gh_user["login"])
-      flash[:alert] = "Another user already exists with that username. Please delete that user and try again."
-    else
-      if current_user
-        @user = current_user
-      elsif User.exists?(username: gh_user["login"])
-        @user = User.find_by(github_id: gh_user["id"])
+    if(!params[:code]) then redirect_to action: :gh_authorize end
+    gh_user_info = Github.new(ENV).user_info(params[:code])
+    @user = User.find_by(github_id: gh_user_info[:github_id])
+    if signed_in?
+      if @user && current_user_lean["id"] != @user.id
+        @user = false
       else
-        @user = User.create!(gh_params)
+        @user = current_user
       end
-      @user.update!(gh_params)
-      session[:user] = @user
+    elsif !@user
+      @user = User.new
     end
-    redirect_to action: "welcome"
-  end
-
-  def welcome
-    @user = current_user
+    if !@user || !@user.update!(gh_user_info)
+      flash[:alert] = "The user #{gh_user_info[:username]} already exists! Please delete that account and try again."
+      redirect_to action: :sign_in
+    else
+      set_current_user @user
+      redirect_to action: :profile
+    end
   end
 
   private
   def user_params
-    if @user.github_id
-      params.require(:user).permit(:password, :password_confirmation)
-    else
-      params.require(:user).permit(:password, :password_confirmation, :username, :name, :email)
-    end
+    params.permit(:password, :username, :name, :email)
   end
 
 end
