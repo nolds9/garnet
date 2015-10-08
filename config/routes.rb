@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  root to: 'application#welcome'
+  root to: 'users#profile'
 
-  get "/profile", to: "users#show"
-  post "/profile", to: "users#update"
-  delete "/profile/delete", to: "users#delete"
+  get "/profile", to: "users#profile"
+  patch "/profile", to: "users#update"
+  delete "/profile", to: "users#delete"
 
   get "/users/is_authorized", to: "users#is_authorized?"
 
@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   get '/sign_up', to: 'users#sign_up'
   post '/sign_up', to: 'users#sign_up!'
   get '/sign_out', to: 'users#sign_out'
-  get '/welcome', to: 'users#welcome'
   # students submissions end-point
   get 'api/memberships/:id/submissions', to: "submissions_api#index"
 

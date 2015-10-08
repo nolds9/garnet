@@ -10,9 +10,7 @@
 </head>
 <body>
   <header>
-    <h1 class='logo'>
-      <a href="/profile"><span style="color:red;">ga</span>rnet</a>
-    </h1>
+    <h1><a href="/profile"><span>GA</span>RNET</a></h1>
     <nav>
       <% if current_user %>
       <a href="/profile"><%= current_user.username %></a>
@@ -24,11 +22,13 @@
     </nav>
   </header>
   <main>
-    <div class="errareHumanumEst">
+    <% if flash.count > 0 %>
+    <section class="errareHumanumEst">
     <% flash.each do |key, value| %>
       <p><%= value %></p>
     <% end %>
-    </div>
+    </section>
+    <% end %>
     <%= yield %>
   </main>
   <footer>
