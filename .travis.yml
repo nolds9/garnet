@@ -4,7 +4,7 @@ rvm:
 env:
   - RAILS_ENV=test
 before_script:
-  - "psql -e 'create database garnet_test;'"
+  - "psql -c 'create database garnet_test;'" -U postgres
   - "cp ./.travis.database.yml ./config/database.yml"
 script:
   - bundle exec rake db:schema:load
