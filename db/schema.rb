@@ -18,16 +18,16 @@ ActiveRecord::Schema.define(version: 20151008235423) do
 
   create_table "assignments", force: :cascade do |t|
     t.string   "category"
+    t.string   "repo_url"
     t.string   "title"
     t.datetime "due_date"
     t.integer  "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string   "repo_url"
   end
 
   create_table "attendances", force: :cascade do |t|
-    t.string   "status"
+    t.integer  "status"
     t.integer  "event_id"
     t.integer  "membership_id"
     t.datetime "created_at",    null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20151008235423) do
   end
 
   create_table "observations", force: :cascade do |t|
-    t.string   "status"
+    t.integer  "status"
     t.text     "body"
     t.integer  "observee_id"
     t.integer  "author_id"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20151008235423) do
   end
 
   create_table "submissions", force: :cascade do |t|
-    t.string   "status"
+    t.integer  "status"
     t.text     "student_notes"
     t.text     "grader_notes"
     t.integer  "assignment_id"
@@ -80,12 +80,10 @@ ActiveRecord::Schema.define(version: 20151008235423) do
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
-    t.string   "first_name"
-    t.string   "last_name"
+    t.string   "name"
+    t.string   "email"
     t.string   "password_digest"
     t.string   "github_id"
-    t.string   "github_username"
-    t.string   "email"
     t.string   "image_url"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
