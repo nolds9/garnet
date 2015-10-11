@@ -131,14 +131,3 @@ if !signed_in && !gh_db
   User.new
 =end
 ```
-
-## Deployment
-
-When commits are pushed or merged via pull request to master on this repo, [Travis](https://travis-ci.org/ga-dc/garnet)
-clones the application, runs `bundle exec rake` to run tests specified in `spec/`.
-
-If all tests pass, travis pushes to the production repo: `git@garnet.wdidc.org:garnet.git`
-
-This triggers a `post-update` hook, which pulls from GitHub's master branch and restarts
-unicorn, the application server.
-
