@@ -9,9 +9,8 @@ before_script:
 script:
 - bundle exec rake db:schema:load
 - bundle exec rake db:test:prepare
-- bundle exec rake spec
+- bundle exec rspec
 after_failure:
-- psql -e 'show databases;'
 - cat ./config/database.yml
 - echo $RAILS_ENV
 - bundle exec rake --version

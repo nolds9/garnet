@@ -11,23 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151007161139) do
+ActiveRecord::Schema.define(version: 20151008235423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "assignments", force: :cascade do |t|
     t.string   "category"
-    t.string   "repo_url"
     t.string   "title"
     t.datetime "due_date"
     t.integer  "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "repo_url"
   end
 
   create_table "attendances", force: :cascade do |t|
-    t.integer  "status"
+    t.string   "status"
     t.integer  "event_id"
     t.integer  "membership_id"
     t.datetime "created_at",    null: false
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20151007161139) do
     t.integer  "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "title"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -58,7 +59,7 @@ ActiveRecord::Schema.define(version: 20151007161139) do
   end
 
   create_table "observations", force: :cascade do |t|
-    t.integer  "status"
+    t.string   "status"
     t.text     "body"
     t.integer  "observee_id"
     t.integer  "author_id"
@@ -67,7 +68,7 @@ ActiveRecord::Schema.define(version: 20151007161139) do
   end
 
   create_table "submissions", force: :cascade do |t|
-    t.integer  "status"
+    t.string   "status"
     t.text     "student_notes"
     t.text     "grader_notes"
     t.integer  "assignment_id"
@@ -79,10 +80,12 @@ ActiveRecord::Schema.define(version: 20151007161139) do
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
-    t.string   "name"
-    t.string   "email"
+    t.string   "first_name"
+    t.string   "last_name"
     t.string   "password_digest"
     t.string   "github_id"
+    t.string   "github_username"
+    t.string   "email"
     t.string   "image_url"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
