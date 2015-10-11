@@ -1,5 +1,5 @@
 test:
   adapter: postgresql
   database: garnet_test
-  username: root
+  username: postgres
   encoding: utf8
