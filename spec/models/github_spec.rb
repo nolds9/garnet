@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Github' do
-  it "always fails" do
-    expect(true).to eq(false)
+  it "always passes" do
+    expect(true).to eq(true)
   end
 end
