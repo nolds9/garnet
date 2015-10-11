@@ -1,17 +1,20 @@
 language: ruby
 rvm:
-  - 2.2.3
+- 2.2.3
 env:
-  - RAILS_ENV=test
+- RAILS_ENV=test
 before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-  - "cp ./.travis.database.yml ./config/database.yml"
+- psql -c 'create database travis_ci_test;' -U postgres
+- cp ./.travis.database.yml ./config/database.yml
 script:
-  - bundle exec rake db:schema:load
-  - bundle exec rake db:test:prepare
-  - bundle exec rake spec
+- bundle exec rake db:schema:load
+- bundle exec rake db:test:prepare
+- bundle exec rake spec
 after_failure:
-  - "psql -e 'show databases;'"
-  - "cat ./config/database.yml"
-  - "echo $RAILS_ENV"
-  - "bundle exec rake --version"
+- psql -e 'show databases;'
+- cat ./config/database.yml
+- echo $RAILS_ENV
+- bundle exec rake --version
+before_install:
+- openssl aes-256-cbc -K $encrypted_91297e33cb51_key -iv $encrypted_91297e33cb51_iv
+  -in travis_rsa.enc -out travis_rsa -d
