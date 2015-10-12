@@ -116,3 +116,29 @@ If they sign up *without* Github, they can update their username, password, e-ma
   - See events at which they are expected to attend
 
 ### Student
+
+```rb
+=begin
+if signed_in && gh_db && current_user.id == gh_db.id
+  current_user
+if signed_in && gh_db && current_user.id != gh_db.id
+  "error: gh account already linked"
+if signed_in && !gh_db
+  current_user
+if !signed_in && gh_db
+  gh_db_user
+if !signed_in && !gh_db
+  User.new
+=end
+```
+
+## Deployment
+
+When commits are pushed or merged via pull request to master on this repo, [Travis](https://travis-ci.org/ga-dc/garnet)
+clones the application, runs `bundle exec rake` to run tests specified in `spec/`.
+
+If all tests pass, travis pushes to the production repo: `git@garnet.wdidc.org:garnet.git`
+
+This triggers a `post-update` hook, which pulls from GitHub's master branch and restarts
+unicorn, the application server.
+

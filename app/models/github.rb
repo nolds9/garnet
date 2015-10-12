@@ -8,12 +8,26 @@ class Github
     @token = token
   end
 
+  def user_info user_code
+    @user_code = user_code
+    get_access_token
+    api_response = api.user
+    return {
+      github_id: api_response["id"],
+      username: api_response["login"],
+      image_url: api_response["avatar_url"],
+      name: api_response["name"],
+      email: api_response["email"]
+    }
+  end
+
   def api
     if @token
       return Octokit::Client.new(access_token: @token)
     else
       return Octokit::Client.new(client_id: @env["gh_client_id"], client_secret: @env["gh_client_secret"])
     end
+    return self
   end
 
   def oauth_link

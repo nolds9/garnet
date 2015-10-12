@@ -1,8 +1,20 @@
-<%= form_tag( action, method: "post") do %>
-  <input name="username" placeholder="Username" value="<%= user.username %>" />
-  <input name="name" placeholder="Full name" value="<%= user.name %>" />
-  <input name="email" placeholder="E-mail" value="<%= user.email %>" />
+<%= form_for user, url: action, method: method do %>
+  <% if profile_editable? user %>
+  <a class="button" href="/github/authorize">Link your Github account</a>
+  <% end %>
+
+  <%= profile_fields_conditionally_editable_for user, {
+    username: "Username",
+    name: "Full name",
+    email: "E-mail" } %>
+
+  <% if profile_editable? user %>
   <input type="password" name="password" placeholder="Password" />
   <input type="password" name="password_confirmation" placeholder="Confirm password" />
   <input type="submit" value="Submit" />
+  <% end %>
+
+  <% if current_user && user.id == current_user.id %>
+  <%= link_to "Delete your account", "/profile", class: "button", data: {confirm: "You sure? This is probably a really, really bad idea, since it's going to delete all of the grades, attendances, and everything else associated with this account."}, method: :delete %>
+  <% end %>
 <% end %>

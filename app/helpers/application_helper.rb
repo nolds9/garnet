@@ -60,5 +60,5 @@ module ApplicationHelper
   def profile_path user
     "/profile?user=#{user.username}"
   end
-
+  
 end

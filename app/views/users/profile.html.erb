@@ -1,0 +1,22 @@
+<div class="intro">
+  <%= avatar(@user) %>
+  <h2 title="user#<%= @user.id %>"><%= @user.username %></h2>
+</div>
+
+<section>
+  <h3>Profile</h3>
+  <%= render partial: "form", locals: {action: "/profile", method: "patch", user: @user} %>
+</section>
+
+<section>
+  <h3>Groups</h3>
+  <% if @groups.count == 0 %>
+  <p>None yet!</p>
+  <% else %>
+  <ul>
+  <% @groups.each do |group| %>
+    <li><%= breadcrumbs(group) %> <%= "(admin)" if group.memberships.exists?(user_id: @user.id, is_admin: true) %></li>
+  <% end %>
+  </ul>
+  <% end %>
+</section>
