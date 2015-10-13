@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   get "/users", to: "users#index", as: :users_all
 
-  get "/profile(/:username)", to: "users#profile", as: :profile
+  get "/profile(/:user)", to: "users#profile", as: :profile
   patch "/profile", to: "users#update"
   delete "/profile", to: "users#delete"
 
