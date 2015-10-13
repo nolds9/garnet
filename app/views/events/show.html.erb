@@ -1,23 +1,11 @@
-<h3><%= @event.date.strftime("%A, %B %e, %Y") %></h3>
-<div class="students">
-  <% @attendances.each do |attendance| %>
-    <div class="student attendance">
-      <img src='<%= attendance.membership.user.image_url %>'>
-      <h3><%= attendance.membership.user.username %></h3>
-      <%= form_for [@group, @event, attendance] do |f| %>
-        <label>
-	  Present
-	  <%= f.radio_button :status, "Present" %>
-	</label>
-        <label>
-	  Tardy
-	  <%= f.radio_button :status, "Tardy" %>
-	</label>
-        <label>
-	  Absent
-	  <%= f.radio_button :status, "Absent" %>
-	</label>
-      <% end %>
-    </div>
-  <% end %>
-</div>
+<h2><%= @event.date.strftime("%A, %B %e, %Y") %></h2>
+<%= form_tag event_update_all_path(@event), method: :patch do %>
+  <table>
+    <% @attendances.each do |attendance| %>
+    <tr>
+      <%= render partial: "attendances/row", locals: {attendance: attendance} %>
+    </tr>
+    <% end %>
+  </table>
+  <input type="submit" value="Submit" />
+<% end %>

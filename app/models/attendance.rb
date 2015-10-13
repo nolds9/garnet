@@ -1,6 +1,14 @@
 class Attendance < ActiveRecord::Base
   belongs_to :event
-  belongs_to :membership
+  belongs_to :user
+
+  before_save :set_default_value
+
+  def set_default_value
+    if !self.status
+      self.status = 0
+    end
+  end
 
   def date
     self.event.date.strftime("%a, %m/%d/%y")
@@ -9,11 +17,11 @@ class Attendance < ActiveRecord::Base
   def status_english
     case self.status
     when 0
-      "absent"
+      "Absent"
     when 1
-      "tardy"
+      "Tardy"
     when 2
-      "present"
+      "Present"
     end
   end
 end

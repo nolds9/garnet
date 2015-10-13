@@ -1,26 +1,35 @@
 class EventsController < ApplicationController
+
   def index
-    @events = Event.all
+    @group = Group.at_path(params[:group_path])
+    @events = @group.descendants_attr("events").uniq.sort{|a,b| a.date <=> b.date}
   end
+
   def create
-    @event = Event.find_or_initialize_by(date: Time.now.at_beginning_of_day, group_id: params[:group_id])
-    if @event.save
-      redirect_to group_event_path(params[:group_id], @event)
-    else
-      flash[:notice] = "Could not create event."
-      redirect_to group_path params[:group_id]
-    end
+    @group = Group.at_path(params[:group_path])
+    @event = @group.events.create(event_params)
+    event = params[:event]
+    date = DateTime.new(
+      event["date(1i)"].to_i,
+      event["date(2i)"].to_i,
+      event["date(3i)"].to_i,
+      event["date(4i)"].to_i,
+      event["date(5i)"].to_i
+    )
+    redirect_to event_path(@event)
   end
 
   def show
     @event = Event.find(params[:id])
-    @group = Group.find(params[:group_id])
+    @group = @event.group
     @attendances =  @event.attendances.sort_by do |attendance|
-      attendance.membership.user.username
+      attendance.user.username
     end
+  end
 
-    # Find all 'students' for a given group, and order them by username TODO should be last_name
-    # @students = group.memberships.where(is_admin: false).joins(:user).order('users.username')
+  private
+  def event_params
+    params.require(:event).permit(:date, :title, :required)
   end
 
 end

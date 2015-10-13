@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root to: 'users#profile'
 
-  get "/profile", to: "users#profile"
+  get "/profile(/:username)", to: "users#profile", as: :profile
   patch "/profile", to: "users#update"
   delete "/profile", to: "users#delete"
 
@@ -28,19 +28,20 @@ Rails.application.routes.draw do
 
   get "/report_card/:id", to: 'groups#report_card'
 
-  resources :groups do
-    resources :events do
+  post "/groups/:path", to: "groups#create"
+  resources :groups, param: :path, except: :create do
+    resources :events
+    resources :assignments
+    resources :observations, only: [:index]
+    resources :memberships, param: :user do
+      resources :observations
+      resources :submissions
       resources :attendances
     end
-    resources :assignments do
-      resources :submissions
-    end
-    resources :memberships do
-      resources :observations
-    end
-    resources :students do
-      resources :observations
-    end
+  end
+
+  resources :events do
+    patch "/attendances", to: "attendances#update_all", as: :update_all
   end
 
 end

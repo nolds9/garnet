@@ -1,26 +1,14 @@
-<%# meta title: @assignment %>
-<%= breadcrumbs(@assignment.group) %>
 <h2><%= @assignment.title %></h2>
 <p><%= link_to_if @assignment.repo_url.present?, @assignment.repo_url, @assignment.repo_url %>
-
 <p>(<%= "#{@assignment.summary_info.join(", ")})" %></p>
 
-<% if current_user.is_member_of(@assignment.group, true) %>
-  <%= link_to "edit", edit_assignment_path(@assignment)%>
-  <%= link_to 'delete', assignment_path(@assignment), method: :delete, data: {confirm: "Are you sure?"} %>
-<% end %>
-
-<div class='sort-by'>
-<%# @squads.each do |squad| %>
-  <%#= link_to squad, assignment_path(@assignment) + "?squad=#{squad.downcase}" %>
-<%# end %>
-</div>
-
-<% if current_user.is_member_of(@assignment.group, true) %>
 <section>
 <h3>Submissions</h3>
 <table>
-  <%= render partial: 'submissions', collection: @assignment.submissions, as: :submission %>
+  <% @assignment.submissions.each do |submission| %>
+  <tr>
+  <%= render partial: "submissions/row", locals: {submission: submission} %>
+  </tr>
   <% end %>
 </table>
 </section>

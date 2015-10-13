@@ -1,13 +1,26 @@
 class Group < Tree
   has_many :events
-  has_many :assignments
-  has_many :memberships
   has_many :attendances, through: :events
+
+  has_many :assignments
+  has_many :submissions, through: :assignments
+
+  has_many :observations
+
+  has_many :memberships, dependent: :destroy
+  has_many :users, through: :memberships
+
   belongs_to :parent, class_name: "Group"
   has_many :children, class_name: "Group", foreign_key: "parent_id"
 
   validates :title, presence: true, format: {with: /[a-zA-Z0-9\-]+/, message: "Only letters, numbers, and hyphens are allowed."}
   validate :has_parent_and_unique_name_among_siblings
+  before_save :update_path
+  after_save :update_child_paths
+
+  def to_param
+    self.path
+  end
 
   def has_parent_and_unique_name_among_siblings
     if !self.parent
@@ -22,8 +35,21 @@ class Group < Tree
     end
   end
 
-  def self.named(group_name)
-    Group.find_by(title: group_name)
+  def self.at_path path
+    Group.find_by(path: path)
+  end
+
+  def update_path
+    titles = self.ancestors([]).collect{|g| g.title}
+    titles.push(self.title)
+    self.path = titles.join("_")
+  end
+
+  def update_child_paths
+    self.children.each do |group|
+      group.update_path
+      group.save!
+    end
   end
 
   def owners
@@ -40,15 +66,6 @@ class Group < Tree
 
   def subnonadmins
     self.descendants_attr("memberships").select{|m| !m.is_admin}.collect{|m| m.user}.uniq
-  end
-
-  def owner_exists? user
-    if user.class <= Hash
-      username = user["username"]
-    else
-      username = user.username
-    end
-    return self.owners.collect{|u| u.username}.include?(username)
   end
 
   def bulk_create_memberships array, is_admin
