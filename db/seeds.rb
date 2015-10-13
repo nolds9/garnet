@@ -37,6 +37,7 @@ ga_groups = {
 }
 
 instructors6 = [
+  ["garoot", "password"],
   ["Robin", "Thomas"],
   ["Andy", "Kim"],
   ["Adam", "Bray"],
