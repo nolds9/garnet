@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
   before_action :authenticate
-  helper_method :current_user, :is_signed_in?
+  helper_method :current_user, :current_user_lean, :signed_in?
 
   private
     def authenticate
@@ -17,8 +17,22 @@ class ApplicationController < ActionController::Base
       session[:user] = model
     end
 
+    def signed_in?
+      if session[:user]
+        return true
+      else
+        return false
+      end
+    end
+
+    def is_su?
+      puts "*" * 50
+      puts session[:user]
+      return (session[:user]["username"] == "garoot")
+    end
+
     def current_user
-      if signed_in?
+      if signed_in? && User.exists?(id: session[:user]["id"])
         return User.find(session[:user]["id"])
       else
         return false
@@ -26,19 +40,15 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user_lean
-      if session[:user]
+      if signed_in?
         return session[:user]
       else
         return false
       end
     end
 
-    def signed_in?
-      if session[:user]
-        return true
-      else
-        return false
-      end
+    def profile_path user
+      "/profile/#{user.username}"
     end
 
 end

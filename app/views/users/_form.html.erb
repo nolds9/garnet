@@ -6,7 +6,8 @@
   <%= profile_fields_conditionally_editable_for user, {
     username: "Username",
     name: "Full Name",
-    email: "E-mail" } %>
+    email: "E-mail",
+    image_url: "Image URL"} %>
 
   <% if profile_editable? user %>
   <input type="password" name="password" placeholder="Password" />
@@ -14,7 +15,7 @@
   <input type="submit" value="Submit" />
   <% end %>
 
-  <% if current_user && user.id == current_user.id %>
-  <%= link_to "Delete your account", "/profile", class: "button", data: {confirm: "Are you sure? This is probably a really, really bad idea, since it's going to delete all of the grades, attendance records, and everything else associated with this account."}, method: :delete %>
+  <% if signed_in? && user.id == current_user_lean["id"] %>
+  <%= link_to "Delete your account", "/profile", class: "button", data: {confirm: "You sure? This is probably a really, really bad idea, since it's going to delete all of the grades, attendances, and everything else associated with this account."}, method: :delete %>
   <% end %>
 <% end %>

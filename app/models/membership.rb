@@ -1,71 +1,78 @@
 class Membership < ActiveRecord::Base
   belongs_to :group
   belongs_to :user
-  has_many :attendances
-  has_many :authored_observations, :class_name => 'Observation', :foreign_key => 'author_id'
-  has_many :student_observations, :class_name => 'Observation', :foreign_key => 'observee_id'
-  has_many :grades, :class_name => 'Submission', :foreign_key => 'grader_id'
-  has_many :submissions, :class_name => 'Submission', :foreign_key => 'submitter_id'
 
-  def self.in_role(name, group_title, is_admin = false)
-    if is_admin == "admin"
-      is_admin = true
-    elsif is_admin == "student"
-      is_admin = false
+  validate :is_unique_in_group
+  before_save :default_values
+  after_create :create_ancestors
+  before_destroy :destroy_descendants
+
+  def is_unique_in_group
+    if self.group.memberships.exists?(user_id: self.user_id)
+      errors[:base].push("A user may have only one membership in a given group.")
     end
-    user = User.find_by(username: name)
-    group = Group.find_by(title: group_title)
-    membership = Membership.find_by(
-      user_id: user.id,
-      group_id: group.id,
-      is_admin: is_admin
-    )
-    return membership
   end
 
-  def self.bulk_create(array, group_id, is_admin)
-    array.each do |person|
-      user = User.find_by(username: person[0])
-      if(!user)
-        user = User.new(username: person[0], password: person[1])
-        user.save!
-      end
-      user.memberships.create(group_id: group_id, is_admin: is_admin)
+  def default_values
+    if self.is_admin === nil
+      self.is_admin = "false"
     end
+  end
+
+  def create_ancestors
+    if self.group.parent
+      if !self.group.parent.memberships.exists?(user_id: self.user_id)
+        self.class.create!(group_id: self.group.parent_id, user_id: self.user_id, is_admin: "false")
+      end
+    end
+  end
+
+  def destroy_descendants
+    if self.group.children
+      self.group.children.collect{|c| c.memberships}.flatten.each do |child|
+        if child.user_id == self.user_id
+          child.destroy!
+        end
+      end
+    end
+  end
+
+  def self.extract_users array
+    array.collect{|m| m.user}.uniq.sort{|a,b| a.name <=> b.name}
+  end
+
+  def self.by_user memberships, skip_condition = nil
+    collection = {}
+    memberships.each do |membership|
+      next if skip_condition && membership.send(skip_condition[0]) == skip_condition[1]
+      user = membership.user
+      if collection.has_key?(user.username) == false
+        collection[user.username] = {user: user, memberships: []}
+      end
+      if !collection[user.username][:memberships].include?(membership)
+        collection[user.username][:memberships].push(membership)
+      end
+    end
+    return collection.sort_by{|username, member| member[:user].name}
   end
 
   def name
     self.user.username
   end
 
-  def observe name, body, color
-    observee = User.find_by(username: name)
-    observee_m = self.group.memberships.find_by(user_id: observee.id)
-    self.authored_observations.create!(observee_id: observee_m.id, body: body, status: color )
+  def observed_by name, body, color
+    author = User.find_by(username: name.downcase)
+    self.observations.create!(author_id: author.id, body: body, status: color )
   end
 
   def last_observation
     self.student_observations.last
   end
 
-  def minions
-    group = self.group
-    group.memberships.where(is_admin: false)
-  end
-
-  def get_subgroups key = nil
-    self_result = self.send(key)
-    collection = [self_result]
-    add_method = "push"
-    if self_result.respond_to? "merge"
-      collection = self_result
-      add_method = "concat"
-    end
-    self.group.get_subgroups("memberships").each do |membership|
-      next if membership.user.id != self.user.id
-      collection.send(add_method, membership.send(key))
-    end
-    return collection
+  def has_descendants?
+    children = self.group.children
+    descendants = children.select{|c| c.memberships.where(user_id: self.user_id).count > 0}
+    return (descendants.count > 0)
   end
 
 end

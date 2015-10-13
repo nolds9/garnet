@@ -1,6 +1,6 @@
 class ObservationsController < ApplicationController
   def create
-    @group = Group.find(params[:group_id])
+    @group = Group.at_path(params[:group_path])
     @student = Membership.find(params[:membership_id])
     @author = @group.memberships.find_by(user_id: current_user.id)
     @observation = @author.authored_observations.new observation_params

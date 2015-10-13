@@ -1,3 +1,5 @@
+# ActiveRecord::Base.logger = Logger.new(STDOUT)
+
 Assignment.destroy_all
 Attendance.destroy_all
 Event.destroy_all
@@ -7,29 +9,27 @@ Observation.destroy_all
 Submission.destroy_all
 User.destroy_all
 
-groups = {
-  "ga": {
-    "wdi": {
-      "dc": {
-        "wdidc5": {
-          "classroom1": {
-          },
-          "classroom2": {
-          }
+ga_groups = {
+  "wdi": {
+    "dc": {
+      "5": {
+        "rm1": {
         },
-        "wdidc6": {
-          "milk": {
-          },
-          "cookies": {
-          }
+        "rm2": {
+        }
+      },
+      "6": {
+        "rm1": {
         },
-        "wdidc7": {
-          "classroom1": {
-          },
-          "classroom3": {
-          },
-          "classroom4": {
-          }
+        "rm2": {
+        }
+      },
+      "7": {
+        "rm4": {
+        },
+        "rm5": {
+        },
+        "rm6": {
         }
       }
     }
@@ -37,80 +37,75 @@ groups = {
 }
 
 instructors6 = [
-  ["robin", "thomas"],
-  ["andy", "kim"],
-  ["adam", "bray"],
-  ["matt", "scilipoti"],
-  ["jesse", "shawl"],
-  ["adrian", "maseda"]
+  ["garoot", "password"],
+  ["Robin", "Thomas"],
+  ["Andy", "Kim"],
+  ["Adam", "Bray"],
+  ["Matt", "Scilipoti"],
+  ["Jesse", "Shawl"],
+  ["Adrian", "Maseda"]
 ]
 
 instructors7 = [
-  ["robin", "thomas"],
-  ["andy", "kim"],
-  ["nick", "olds"],
-  ["erica", "irving"],
-  ["adam", "bray"],
-  ["matt", "scilipoti"],
-  ["jesse", "shawl"],
-  ["john", "master"],
-  ["adrian", "maseda"]
+  ["Robin", "Thomas"],
+  ["Andy", "Kim"],
+  ["Nick", "Olds"],
+  ["Erica", "Irving"],
+  ["Adam", "bray"],
+  ["Matt", "scilipoti"],
+  ["Jesse", "shawl"],
+  ["John", "master"],
+  ["Adrian", "maseda"]
 ]
 
 students6 = [
-  ["jane", "doe"],
-  ["joe", "smith"],
-  ["kareem", "abdul-jabaar"],
-  ["dikembe", "muotumbo"]
+  ["Jane", "Doe"],
+  ["Joe", "Smith"],
+  ["Kareem", "abdul-jabaar"],
+  ["Dikembe", "muotumbo"]
 ]
 
 students7 = [
-  ["harry", "potter"],
-  ["hermione", "granger"],
-  ["ron", "weasley"]
+  ["harry", "Potter"],
+  ["Germione", "Granger"],
+  ["Ron", "weasley"]
 ]
 
+ga = Group.create(title: "ga")
+ga.create_descendants(ga_groups, :title)
 
-Group.bulk_create(groups)
-
-Membership.bulk_create(instructors6, Group.named("wdidc6").id, true)
-Membership.bulk_create(students6, Group.named("wdidc6").id, false)
-Membership.bulk_create(students6, Group.named("milk").id, false)
-
-Membership.bulk_create(instructors7, Group.named("wdidc7").id, true)
-Membership.bulk_create(students7, Group.named("wdidc7").id, false)
+Group.at_path("ga_wdi_dc_6").bulk_create_memberships(instructors6, true)
+Group.at_path("ga_wdi_dc_6_rm1").bulk_create_memberships(students6, false)
+Group.at_path("ga_wdi_dc_7").bulk_create_memberships(instructors7, true)
+Group.at_path("ga_wdi_dc_7").bulk_create_memberships(students7, false)
 
 robin = User.named("robin")
 jesse = User.named("jesse")
 andy = User.named("andy")
 jane = User.named("jane")
+joe = User.named("joe")
+dikembe = User.named("dikembe")
 
-robin.role("wdidc6", "admin").observe("jane", "Jane is cool. A+", 2)
-robin.role("wdidc6", "admin").observe("jane", "Jane is no longer cool", 0)
-jesse.role("wdidc6", "admin").observe("jane", "Jane smells", 1)
-andy.role("wdidc6", "admin").observe("jane", "Basically wrote Facebook for final project", 2)
-robin.role("wdidc6", "admin").observe("joe", "Joe is lame. F-", 0)
-jesse.role("wdidc6", "admin").observe("joe", "Joe bribed me with donuts", 1)
-robin.role("wdidc6", "admin").observe("dikembe", "Dikembe has a cool name. C-", 1)
+jane.was_observed("ga_wdi_dc_6", "robin", "Jane is cool.", 2)
+jane.was_observed("ga_wdi_dc_6_rm1", "robin", "Jane is no longer cool.", 0)
+jane.was_observed("ga_wdi_dc_6", "jesse", "Jane smells.", 1)
+jane.was_observed("ga_wdi_dc_6_rm1", "andy", "Re-wrote Facebook", 2)
 
-Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 16))
-Group.named("wdidc6").events.create(date: DateTime.new(2015, 10, 17))
-Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 16))
-Group.named("wdidc7").events.create(date: DateTime.new(2015, 10, 17))
+joe.was_observed("ga_wdi_dc_6", "robin", "Joe is lame", 0)
+joe.was_observed("ga_wdi_dc_6_rm1", "jesse", "Joe bought me donuts", 1)
 
-Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com")
-Group.named("wdidc6").assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com")
-Group.named("milk").assignments.create(due_date: DateTime.new(2015, 10, 15), category: "homework", title: "Some homework")
-Group.named("cookies").assignments.create(due_date: DateTime.new(2015, 10, 14), category: "homework", title: "HW for Cookies")
+dikembe.was_observed("ga_wdi_dc_6", "robin", "Cool name", 1)
 
-jane.role("wdidc6", "student").submissions.each_with_index do |submission, i|
+Group.at_path("ga_wdi_dc_6").events.create(date: DateTime.new(2015, 10, 16), required: true)
+Group.at_path("ga_wdi_dc_6").events.create(date: DateTime.new(2015, 10, 17), required: true)
+Group.at_path("ga_wdi_dc_7").events.create(date: DateTime.new(2015, 10, 16), required: true)
+Group.at_path("ga_wdi_dc_7").events.create(date: DateTime.new(2015, 10, 17), required: true)
+
+Group.at_path("ga_wdi_dc_6").assignments.create(due_date: DateTime.new(2015, 10, 16), category: "homework", title: "Pixart", repo_url: "www.github.com", required: true)
+Group.at_path("ga_wdi_dc_6").assignments.create(due_date: DateTime.new(2015, 10, 17), category: "project", title: "Project 1", repo_url: "www.github.com", required: true)
+Group.at_path("ga_wdi_dc_6_rm1").assignments.create(due_date: DateTime.new(2015, 10, 15), category: "homework", title: "Some homework", required: true)
+Group.at_path("ga_wdi_dc_6_rm2").assignments.create(due_date: DateTime.new(2015, 10, 14), category: "homework", title: "HW for Cookies", required: true)
+
+jane.submissions.each do |submission|
   submission.update(status: rand(0..2))
-end
-
-jane.role("milk", "student").submissions.each_with_index do |submission, i|
-  submission.update(status: rand(0..2))
-end
-
-jane.role("wdidc6", "student").attendances.each_with_index do |attendance, i|
-  attendance.update(status: rand(0..2))
 end

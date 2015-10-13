@@ -1,15 +1,14 @@
 class Assignment < ActiveRecord::Base
-  has_many :submissions
   belongs_to :group
+  has_many :submissions
+  has_many :users, through: :submissions
 
   after_create :create_submissions
   after_initialize :set_due_date
 
   def create_submissions
-    group = Group.find(self.group_id)
-    students = group.memberships.where(is_admin: false)
-    students.each do |student|
-      student.submissions.create(assignment_id: self.id, status: "incomplete")
+    self.group.nonadmins.each do |user|
+      user.submissions.create(assignment_id: self.id)
     end
 
   end

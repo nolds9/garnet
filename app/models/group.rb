@@ -1,88 +1,81 @@
-class Group < ActiveRecord::Base
+class Group < Tree
   has_many :events
-  has_many :assignments
-  has_many :memberships
   has_many :attendances, through: :events
+
+  has_many :assignments
+  has_many :submissions, through: :assignments
+
+  has_many :observations
+
+  has_many :memberships, dependent: :destroy
+  has_many :users, through: :memberships
+
   belongs_to :parent, class_name: "Group"
-  has_many :subgroups, class_name: "Group", foreign_key: "parent_id"
+  has_many :children, class_name: "Group", foreign_key: "parent_id"
 
-  def self.named(group_name)
-    Group.find_by(title: group_name)
+  validates :title, presence: true, format: {with: /[a-zA-Z0-9\-]+/, message: "Only letters, numbers, and hyphens are allowed."}
+  validate :has_parent_and_unique_name_among_siblings
+  before_save :update_path
+  after_save :update_child_paths
+
+  def to_param
+    self.path
   end
 
-  def self.bulk_create(groups, parent = nil)
-    groups.each do |key, subgroups|
-      group = self.create(title: key, parent_id: parent)
-      if subgroups.length > 0
-        self.bulk_create(subgroups, group.id)
+  def has_parent_and_unique_name_among_siblings
+    if !self.parent
+      if self.class.all.count > 0
+        errors[:base].push("Each Group has to have a parent group.")
       end
-    end
-  end
-
-  def all_parents(collection = nil)
-    collection = collection || []
-    if self.parent
-      collection.push(self.parent)
-      self.parent.all_parents(collection)
-    end
-    return collection
-  end
-
-  def subgroup_tree
-    tree = self.as_json
-    subgroups = []
-    self.subgroups.each do |subgroup|
-      subgroups.push(subgroup.subgroup_tree)
-    end
-    tree[:subgroups] = subgroups
-    return tree
-  end
-
-  def subgroup_array(collection = nil)
-    collection = collection || []
-    self.subgroups.each do |subgroup|
-      collection.push(subgroup)
-      subgroup.subgroup_array(collection)
-    end
-    return collection
-  end
-
-  def get_subgroups key
-    self_result = self.send(key)
-    if self_result.respond_to? "merge"
-      add_method = "concat"
-      collection = self_result
     else
-    add_method = "push"
-      collection = [self_result]
-    end
-    subgroup_array.each do |subgroup|
-      result = subgroup.send(key)
-      collection.send(add_method, result)
-    end
-    return collection
-  end
-
-  def members where = nil
-    memberships = self.get_subgroups("memberships")
-    if where
-      memberships = memberships.where(where)
-    end
-    fields = [:attendances, :student_observations, :submissions]
-    output = {}
-    memberships.each do |membership|
-      id = membership.user.id
-      fields.each do |field|
-        output[id] = {} if !output.has_key?(id)
-        output[id][:user] = membership.user if !output[id].has_key?(:user)
-        if !output[id].has_key?(field)
-          output[id][field] = membership.send(field)
-        else
-          output[id][field].concat(membership.send(field))
-        end
+      sibling = self.parent.children.find_by(title: self.title)
+      if sibling && sibling.id != self.id
+        errors.add(:title, "must be unique among this group's siblings.")
       end
     end
-    return output
+  end
+
+  def self.at_path path
+    Group.find_by(path: path)
+  end
+
+  def update_path
+    titles = self.ancestors([]).collect{|g| g.title}
+    titles.push(self.title)
+    self.path = titles.join("_")
+  end
+
+  def update_child_paths
+    self.children.each do |group|
+      group.update_path
+      group.save!
+    end
+  end
+
+  def owners
+    self.ancestors_attr("memberships").select{|m| m.is_admin}.collect{|m| m.user}.uniq
+  end
+
+  def admins
+    self.memberships.where(is_admin: true).collect{|m| m.user}
+  end
+
+  def nonadmins
+    self.memberships.where(is_admin: false).collect{|m| m.user}
+  end
+
+  def subnonadmins
+    self.descendants_attr("memberships").select{|m| !m.is_admin}.collect{|m| m.user}.uniq
+  end
+
+  def bulk_create_memberships array, is_admin
+    array.each do |child|
+      user = User.find_by(username: child[0].downcase)
+      if !user
+        user = User.create!(username: child[0], name: child.join(" "), password: child[1].downcase)
+      end
+      self.memberships.create(user_id: user.id, is_admin: is_admin)
+    end
   end
 
 end

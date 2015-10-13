@@ -1,13 +1,31 @@
 class User < ActiveRecord::Base
-  validates :username, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true, format: {with: /[a-zA-Z0-9\-_]+/, message: "Only letters, numbers, hyphens, and underscores are allowed."}
   validates :github_id, allow_blank: true, uniqueness: true
+
   has_many :memberships
   has_many :groups, through: :memberships
+
+  has_many :observations
+  has_many :admin_observations, class_name: "Observation"
+
+  has_many :submissions
+  has_many :admin_submissions, class_name: "Submission"
+  has_many :assignments, through: :submissions
+
+  has_many :attendances
+  has_many :admin_attendances, class_name: "Attendance"
+  has_many :events, through: :attendances
+
   before_save :before_save
   attr_accessor :password
 
   def before_save
+    self.username.downcase!
     self.password_digest = User.new_password(self.password)
+  end
+
+  def to_param
+    "#{self.username}"
   end
 
   def self.named username
@@ -22,26 +40,13 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
-  def is_member_of group, is_admin = false
-    group.memberships.exists?(user_id: self.id, is_admin: is_admin)
-  end
-
-  def role group_title, is_admin = false
-    if is_admin == "admin"
-      is_admin = true
-    elsif is_admin == "student"
-      is_admin = false
-    end
-    group = Group.find_by(title: group_title)
-    return self.memberships.find_by(group_id: group.id, is_admin: is_admin)
-  end
-
-  def minions
-    minions = []
-    self.groups.each do |group|
-      minions.concat(group.memberships.where(is_admin: false))
-    end
-    return minions
+  def was_observed group_path, admin_username, body, status
+    self.observations.create!({
+      group_id: Group.at_path(group_path).id,
+      admin_id: User.named(admin_username).id,
+      body: body,
+      status: status
+    })
   end
 
 end

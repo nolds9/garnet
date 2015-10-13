@@ -12,8 +12,8 @@
   <header>
     <h1><a href="/profile"><span>GA</span>RNET</a></h1>
     <nav>
-      <% if current_user %>
-      <a href="/profile"><%= current_user.username %></a>
+      <% if signed_in? %>
+      <a href="/profile/<%= current_user_lean['username'] %>"><%= current_user_lean['username'] %></a>
       <a href="/sign_out">sign out</a>
       <% else %>
       <a href="/sign_up">Sign up</a>
@@ -28,6 +28,9 @@
       <p><%= value %></p>
     <% end %>
     </section>
+    <% end %>
+    <% if @group %>
+    <h2 class="breadcrumbs"><%= breadcrumbs(@group, @user || nil) %></h2>
     <% end %>
     <%= yield %>
   </main>
