@@ -1,9 +1,13 @@
 class Observation < ActiveRecord::Base
-  belongs_to :observee, class_name: "Membership"
-  belongs_to :author, class_name: "Membership"
+  belongs_to :group
+  belongs_to :user
+  belongs_to :admin, class_name: "User"
 
   def self.statuses
-    [["Green", 2], ["Yellow", 1], ["Red", 0]]
+    {
+      red: 0,
+      yellow: 1,
+      green: 2
+    }
   end
-
 end

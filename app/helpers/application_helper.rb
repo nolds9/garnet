@@ -4,20 +4,37 @@ module ApplicationHelper
   end
 
   def breadcrumbs(group, user = nil)
-    output = [(link_to group.title, group_path(group))]
-    group.ancestors.each do |group|
-      output.unshift((link_to group.title, group_path(group)))
+    output = []
+    group.ancestors([]).sort{|a,b| a.path <=> b.path}.each do |group|
+      output.push((link_to group.title, group_path(group)))
     end
+    output.push(link_to group.title, group_path(group))
     if user
       output.push((link_to user.username, profile_path(user)))
     end
-    return output.join("<").html_safe
+    return output.join("_").html_safe
   end
 
-  def subgroup_tree_html(group)
+  def group_list(groups)
+    output = ""
+    groups.sort{|a,b| a.path <=> b.path }.each do |group|
+      output += "<li>#{link_to(group.path, group_path(group))}</li>"
+    end
+    return output.html_safe
+  end
+
+  def group_descendant_list(group)
+    output = ""
+    group.descendants.each do |subgroup|
+      output += "<li>" + link_to(subgroup.path, group_path(subgroup)) + "</li>"
+    end
+    return output.html_safe
+  end
+
+  def group_descendant_tree(group)
     output = "<li><a href='/groups/#{group.id}'>#{group.title}</a><ul>"
-    group.children.each do |subgroup|
-      output += subgroup_tree_html(subgroup)
+    group.children.each do |child|
+      output += group_descendant_tree(child)
     end
     output += "</ul></li>"
     return output.html_safe
@@ -29,36 +46,46 @@ module ApplicationHelper
     end
   end
 
+  def average_status collection
+    if collection.count > 0
+     return (collection.inject(0){|sum, i| sum + (i.status || 0)}.to_f / collection.count).round(2)
+   else
+     return 0
+   end
+  end
+
   def color_of input
     return if !input
     if !(input.class < Numeric)
-      input = input.average(:status) || 0
+      input = average_status(input)
     end
     case input * 100
     when 0...50
-      return "#fba"
+      return "#fbb"
     when 50...100
-      return "#fda"
+      return "#fdb"
     when 100...150
-      return "#dfa"
+      return "#dfb"
     when 150..200
-      return "#afa"
+      return "#bfb"
     end
   end
 
   def percent_of collection, value
-    divisor = collection.where(status: value).length
-    return 1 if divisor <= 0
-    (divisor.to_f / collection.length).round(2)
+    divisor = collection.select{|i| i.status == value}
+    divisor = divisor.length
+    if divisor <= 0
+      percent = 0
+    else
+      percent = (divisor.to_f / collection.length).round(2)
+    end
+    return (percent * 100).to_i
   end
 
   def markdown(text)
-    markdown_to_html = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
-    markdown_to_html.render(text).html_safe
-  end
-
-  def profile_path user
-    "/profile?user=#{user.username}"
+    # markdown_to_html = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+    # markdown_to_html.render(text).html_safe
+    return text
   end
 
 end

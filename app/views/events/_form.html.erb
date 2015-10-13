@@ -1,0 +1,4 @@
+<%= form_tag action, method: method do |f| %>
+<div class="date"><%= datetime_select("event", "date") %></div>
+<%= submit_tag "Create event" %>
+<% end %>

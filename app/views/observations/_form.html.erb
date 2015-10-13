@@ -1,7 +1,5 @@
-<%= form_for [group, membership, observation] do |f| %>
- <%= f.label :status %>
+<%= form_for [group, membership, Observation.new] do |f| %>
  <%= f.select :status, Observation.statuses %>
- <%= f.label :body %>
- <%= f.text_area :body %>
- <%= f.submit %>
+ <%= f.text_area :body, placeholder: "Write your observation." %>
+ <%= f.submit "Submit new observation" %>
 <% end %>

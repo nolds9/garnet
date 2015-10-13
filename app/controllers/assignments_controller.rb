@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
 
   def index
-    @group = Group.find(params[:group_id])
+    @group = Group.at_path(params[:group_path])
     @user = current_user
     @assignment = Assignment.new
     @assignments = @group.descendants_attr("assignments")
@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
   end
 
   def create
-    @group = Group.find(params[:group_id])
+    @group = Group.at_path(params[:group_path])
     @assignment = @group.assignments.new(assignment_params)
     if @assignment.save
       redirect_to group_assignments_path(@group)

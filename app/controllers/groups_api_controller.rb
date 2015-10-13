@@ -7,13 +7,13 @@ class GroupsApiController < ApplicationController
   end
 
   def students
-    group = Group.find(params[:id])
+    group = Group.at_path(params[:group_path])
     students = group.memberships.where(is_admin: false)
     render json: students
   end
 
   def students_attendances
-    group = Group.find(params[:id])
+    group = Group.at_path(params[:group_path])
     students = group.memberships.where(is_admin: false)
 
     summary = students.map do |student|
@@ -23,7 +23,7 @@ class GroupsApiController < ApplicationController
   end
 
   def students_submissions
-    group = Group.find(params[:id])
+    group = Group.at_path(params[:group_path])
     students = group.memberships.where(is_admin: false)
 
     summary = students.map do |student|

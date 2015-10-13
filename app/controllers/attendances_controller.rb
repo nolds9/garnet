@@ -1,15 +1,20 @@
 class AttendancesController < ApplicationController
+
   def update
     @attendance = Attendance.find(params[:id])
-    @group = Group.find(params[:group_id])
-    if @attendance.update(attendance_params)
-      respond_to do |format| 
-        format.json { render json: @attendance }
+    @attendance.update(status: params[:status])
+    redirect_to event_path(@attendance.group, @attendance.event)
+  end
+
+  def update_all
+    params[:attendance].each do |attendance|
+      @attendance = Attendance.find(attendance[0])
+      @attendance.update(status: attendance[1])
+      if !@event
+        @event = @attendance.event
       end
     end
+    redirect_to event_path(@event)
   end
-  private
-  def attendance_params
-    params.require(:attendance).permit(:status)
-  end
+
 end

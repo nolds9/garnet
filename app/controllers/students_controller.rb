@@ -1,6 +1,6 @@
 class StudentsController < ApplicationController
   def show
-    @group = Group.find(params[:group_id])
+    @group = Group.at_path(params[:group_path])
     @author = Membership.find_by(user_id: current_user.id)
     @observation = @author.authored_observations.new
 

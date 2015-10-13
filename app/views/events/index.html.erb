@@ -1,5 +1,28 @@
-<% @events.each do |event| %>
-  <p>
-    <%= link_to event.date, event %>
-  </p>
-<% end %>
+<h2>Attendance</h2>
+
+<section>
+  <h3>Create</h3>
+  <%= render partial: "events/form", locals: {action: group_events_path(@group), method: :post} %>
+</section>
+
+<section>
+  <h3>Events</h3>
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Group</th>
+      <th>Tardy</th>
+      <th>Present</th>
+      <th>Invited</th>
+    </tr>
+  <% @events.each do |event| %>
+    <tr>
+      <td><%= link_to event.date.strftime("%a, %m/%d, %H:%M"), group_event_path(event.group, event) %></td>
+      <td><%= link_to event.group.path, group_path(event.group) %></td>
+      <td><%= event.attendances.where(status: 1).count %></td>
+      <td><%= event.attendances.where(status: 2).count %></td>
+      <td><%= event.attendances.count %></td>
+    </tr>
+  <% end %>
+  </table>
+</section>
