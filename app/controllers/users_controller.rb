@@ -2,6 +2,10 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate, except: [:profile]
 
+  def index
+    @users = User.all.sort{|a, b| a.name <=> b.name}
+  end
+
   def profile
     if params[:user]
       if User.exists?(username: params[:user])
@@ -23,10 +27,15 @@ class UsersController < ApplicationController
       flash[:alert] = "Your passwords don't match!"
     else
       @user = current_user
-      if @user && @user.update!(user_params)
-        flash[:notice] = "Account updated!"
-      else
-        flash[:notice] = "Since you're using Github, you'll need to make all your changes there."
+      begin
+        if @user && @user.update!(user_params)
+          set_current_user(@user)
+          flash[:notice] = "Account updated!"
+        else
+          flash[:notice] = "Since you're using Github, you'll need to make all your changes there."
+        end
+      rescue Exception => e
+        flash[:alert] = e.message
       end
     end
     redirect_to action: :profile
@@ -54,7 +63,9 @@ class UsersController < ApplicationController
       flash[:alert] = "Your passwords don't match!"
       render "sign_up"
     elsif @user.save!
-      redirect_to action: :sign_in!
+      flash[:notice] = "You've signed up!"
+      set_current_user @user
+      redirect_to action: :profile
     else
       flash[:alert] = "Your account couldn't be created. Did you enter a unique username and password?"
       redirect_to action: :sign_up
@@ -127,7 +138,7 @@ class UsersController < ApplicationController
 
   private
   def user_params
-    params.permit(:password, :username, :name, :email)
+    params.permit(:password, :username, :name, :email, :image_url)
   end
 
 end

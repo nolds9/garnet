@@ -25,6 +25,12 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def is_su?
+      puts "*" * 50
+      puts session[:user]
+      return (session[:user]["username"] == "garoot")
+    end
+
     def current_user
       if signed_in? && User.exists?(id: session[:user]["id"])
         return User.find(session[:user]["id"])

@@ -1,0 +1,7 @@
+<h2>All Users</h2>
+
+<table>
+  <% @users.each do |user| %>
+  <tr><%= render partial: "profile_row", locals: {user: user} %></tr>
+  <% end %>
+</table>

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root to: 'users#profile'
 
+  get "/users", to: "users#index", as: :users_all
+
   get "/profile(/:username)", to: "users#profile", as: :profile
   patch "/profile", to: "users#update"
   delete "/profile", to: "users#delete"
@@ -27,6 +29,9 @@ Rails.application.routes.draw do
   patch 'update_attendance', to: "attendances_api#update"
 
   get "/report_card/:id", to: 'groups#report_card'
+
+  get "/groups/su_create", to: "groups#su_new", as: :groups_su_new
+  post "/groups/su_create", to: "groups#su_create"
 
   post "/groups/:path", to: "groups#create"
   resources :groups, param: :path, except: :create do
