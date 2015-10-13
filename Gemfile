@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'pry'
-gem 'unicorn'
+gem 'unicorn-rails'
 gem "font-awesome-rails"
 gem 'httparty'
 gem 'figaro'
