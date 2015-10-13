@@ -12,7 +12,7 @@ class GroupsController < ApplicationController
     @nonadmins = @group.nonadmins
     @subnonadmins = @group.subnonadmins
     @event = @group.events.new
-    if @group.owners.include?(current_user)
+    if is_su? || @group.owners.include?(current_user)
       @user_role = :owner
     elsif @nonadmins.collect{|u| u.username}.include?(current_user_lean["username"])
       @user_role = :member
@@ -22,6 +22,17 @@ class GroupsController < ApplicationController
   def create
     @parent = Group.at_path(params[:path])
     @group = @parent.children.create!(group_params)
+    redirect_to group_path(@group)
+  end
+
+  def su_new
+    redirect_to :root if !is_su?
+  end
+
+  def su_create
+    redirect_to :root if !is_su?
+    @group = Group.create!(title: params[:title])
+    @group.memberships.create(user_id: current_user.id, is_admin: true)
     redirect_to group_path(@group)
   end
 
@@ -35,7 +46,11 @@ class GroupsController < ApplicationController
     @group = Group.at_path(params[:path])
     @parent = @group.parent
     @group.destroy!
-    redirect_to group_path(@parent)
+    if @parent
+      redirect_to group_path(@parent)
+    else
+      redirect_to profile_path(current_use)
+    end
   end
 
   private

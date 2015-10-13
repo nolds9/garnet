@@ -25,6 +25,10 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def is_su?
+      return (session[:user]["username"] == "god")
+    end
+
     def current_user
       if signed_in? && User.exists?(id: session[:user]["id"])
         return User.find(session[:user]["id"])

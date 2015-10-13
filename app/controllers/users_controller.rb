@@ -2,6 +2,10 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate, except: [:profile]
 
+  def index
+    @users = User.all.sort{|a, b| a.name <=> b.name}
+  end
+
   def profile
     if params[:user]
       if User.exists?(username: params[:user])
@@ -54,7 +58,9 @@ class UsersController < ApplicationController
       flash[:alert] = "Your passwords don't match!"
       render "sign_up"
     elsif @user.save!
-      redirect_to action: :sign_in!
+      flash[:notice] = "You've signed up!"
+      set_current_user @user
+      redirect_to action: :profile
     else
       flash[:alert] = "Your account couldn't be created. Did you enter a unique username and password?"
       redirect_to action: :sign_up
