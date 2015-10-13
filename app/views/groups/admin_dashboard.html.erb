@@ -23,12 +23,12 @@
     <th title="Total in which it was possible to get 2">Tot Poss</th>
     <% end %>
   </tr>
-<% @students.each do |id, student| %>
+<% @students.each do |student| %>
   <tr>
-    <td><%= avatar(student[:user]) %></td>
-    <th><%= link_to student[:user].username, group_student_path(@group.id, id) %></th>
+    <td><%= avatar(student.user) %></td>
+    <th><%= link_to student.user.username, group_student_path(@group.id, student.id) %></th>
     <% [:submissions, :attendances, :student_observations].each do |datum| %>
-      <%= render partial: "students/data", locals: {collection: student[datum]} %>
+      <%= render partial: "students/data", locals: {collection: student.send(datum)} %>
     <% end %>
   </tr>
 <% end %>

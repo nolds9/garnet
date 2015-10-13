@@ -6,9 +6,8 @@ class GroupsController < ApplicationController
 
   def admin_dashboard group
     @group = group
-    @students = @group.members(is_admin: false)
-    @memberships_in_group = @group.memberships
-    @users_in_group = @memberships_in_group.map{|membership|membership.user}
+    @students = @group.memberships.where(is_admin: false)
+    @users_in_group = @students.map{|membership|membership.user}
     @users_in_group_ids = @users_in_group.map{|user|user.id}
     @users = User.all
     @users_not_in_group = @users.where.not(id: @users_in_group_ids)
@@ -20,8 +19,8 @@ class GroupsController < ApplicationController
     @user = user
     @group = group
     @student = @user.memberships.find_by(group_id: @group.id)
-    @attendances = @student.get_subgroups("attendances")
-    @submissions = @student.get_subgroups("submissions")
+    @attendances = @student.descendants_attr("attendances")
+    @submissions = @student.descendants_attr("submissions")
     render "report_card"
   end
 

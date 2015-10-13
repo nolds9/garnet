@@ -61,7 +61,7 @@ class Membership < ActiveRecord::Base
       collection = self_result
       add_method = "concat"
     end
-    self.group.get_subgroups("memberships").each do |membership|
+    self.group.descendants_attr("memberships").each do |membership|
       next if membership.user.id != self.user.id
       collection.send(add_method, membership.send(key))
     end
