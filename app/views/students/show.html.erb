@@ -7,7 +7,7 @@
 
 <section>
   <h3>All Observations</h3>
-  <% @student[:student_observations].each do |observation| %>
+  <% @membership.student_observations.each do |observation| %>
     <%= render partial: "observations/show", locals: {observation: observation} %>
   <% end %>
 </section>

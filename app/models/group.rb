@@ -1,88 +1,64 @@
-class Group < ActiveRecord::Base
+class Group < Tree
   has_many :events
   has_many :assignments
   has_many :memberships
   has_many :attendances, through: :events
   belongs_to :parent, class_name: "Group"
-  has_many :subgroups, class_name: "Group", foreign_key: "parent_id"
+  has_many :children, class_name: "Group", foreign_key: "parent_id"
+
+  validates :title, presence: true, format: {with: /[a-zA-Z0-9\-]+/, message: "Only letters, numbers, and hyphens are allowed."}
+  validate :has_parent_and_unique_name_among_siblings
+
+  def has_parent_and_unique_name_among_siblings
+    if !self.parent
+      if self.class.all.count > 0
+        errors[:base].push("Each Group has to have a parent group.")
+      end
+    else
+      sibling = self.parent.children.find_by(title: self.title)
+      if sibling && sibling.id != self.id
+        errors.add(:title, "must be unique among this group's siblings.")
+      end
+    end
+  end
 
   def self.named(group_name)
     Group.find_by(title: group_name)
   end
 
-  def self.bulk_create(groups, parent = nil)
-    groups.each do |key, subgroups|
-      group = self.create(title: key, parent_id: parent)
-      if subgroups.length > 0
-        self.bulk_create(subgroups, group.id)
-      end
-    end
+  def owners
+    self.ancestors_attr("memberships").select{|m| m.is_admin}.collect{|m| m.user}.uniq
   end
 
-  def all_parents(collection = nil)
-    collection = collection || []
-    if self.parent
-      collection.push(self.parent)
-      self.parent.all_parents(collection)
-    end
-    return collection
+  def admins
+    self.memberships.where(is_admin: true).collect{|m| m.user}
   end
 
-  def subgroup_tree
-    tree = self.as_json
-    subgroups = []
-    self.subgroups.each do |subgroup|
-      subgroups.push(subgroup.subgroup_tree)
-    end
-    tree[:subgroups] = subgroups
-    return tree
+  def nonadmins
+    self.memberships.where(is_admin: false).collect{|m| m.user}
   end
 
-  def subgroup_array(collection = nil)
-    collection = collection || []
-    self.subgroups.each do |subgroup|
-      collection.push(subgroup)
-      subgroup.subgroup_array(collection)
-    end
-    return collection
+  def subnonadmins
+    self.descendants_attr("memberships").select{|m| !m.is_admin}.collect{|m| m.user}.uniq
   end
 
-  def get_subgroups key
-    self_result = self.send(key)
-    if self_result.respond_to? "merge"
-      add_method = "concat"
-      collection = self_result
+  def owner_exists? user
+    if user.class <= Hash
+      username = user["username"]
     else
-    add_method = "push"
-      collection = [self_result]
+      username = user.username
     end
-    subgroup_array.each do |subgroup|
-      result = subgroup.send(key)
-      collection.send(add_method, result)
-    end
-    return collection
+    return self.owners.collect{|u| u.username}.include?(username)
   end
 
-  def members where = nil
-    memberships = self.get_subgroups("memberships")
-    if where
-      memberships = memberships.where(where)
-    end
-    fields = [:attendances, :student_observations, :submissions]
-    output = {}
-    memberships.each do |membership|
-      id = membership.user.id
-      fields.each do |field|
-        output[id] = {} if !output.has_key?(id)
-        output[id][:user] = membership.user if !output[id].has_key?(:user)
-        if !output[id].has_key?(field)
-          output[id][field] = membership.send(field)
-        else
-          output[id][field].concat(membership.send(field))
-        end
+  def bulk_create_memberships array, is_admin
+    array.each do |child|
+      user = User.find_by(username: child[0].downcase)
+      if !user
+        user = User.create!(username: child[0], name: child.join(" "), password: child[1].downcase)
       end
+      self.memberships.create(user_id: user.id, is_admin: is_admin)
     end
-    return output
   end
 
 end
