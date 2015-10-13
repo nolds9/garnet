@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   skip_before_action :authenticate, except: [:profile]
 
   def index
-    @users = User.all.sort{|a, b| a.name <=> b.name}
+    @users = User.all.order(:name)
   end
 
   def profile
