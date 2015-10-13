@@ -27,10 +27,15 @@ class UsersController < ApplicationController
       flash[:alert] = "Your passwords don't match!"
     else
       @user = current_user
-      if @user && @user.update!(user_params)
-        flash[:notice] = "Account updated!"
-      else
-        flash[:notice] = "Since you're using Github, you'll need to make all your changes there."
+      begin
+        if @user && @user.update!(user_params)
+          set_current_user(@user)
+          flash[:notice] = "Account updated!"
+        else
+          flash[:notice] = "Since you're using Github, you'll need to make all your changes there."
+        end
+      rescue Exception => e
+        flash[:alert] = e.message
       end
     end
     redirect_to action: :profile
@@ -133,7 +138,7 @@ class UsersController < ApplicationController
 
   private
   def user_params
-    params.permit(:password, :username, :name, :email)
+    params.permit(:password, :username, :name, :email, :image_url)
   end
 
 end

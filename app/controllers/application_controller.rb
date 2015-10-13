@@ -26,7 +26,9 @@ class ApplicationController < ActionController::Base
     end
 
     def is_su?
-      return (session[:user]["username"] == "god")
+      puts "*" * 50
+      puts session[:user]
+      return (session[:user]["username"] == "garoot")
     end
 
     def current_user
