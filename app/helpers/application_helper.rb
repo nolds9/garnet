@@ -5,7 +5,7 @@ module ApplicationHelper
 
   def breadcrumbs(group, user = nil)
     output = [(link_to group.title, group_path(group))]
-    group.all_parents.each do |group|
+    group.ancestors.each do |group|
       output.unshift((link_to group.title, group_path(group)))
     end
     if user
@@ -16,7 +16,7 @@ module ApplicationHelper
 
   def subgroup_tree_html(group)
     output = "<li><a href='/groups/#{group.id}'>#{group.title}</a><ul>"
-    group.subgroups.each do |subgroup|
+    group.children.each do |subgroup|
       output += subgroup_tree_html(subgroup)
     end
     output += "</ul></li>"
@@ -60,5 +60,5 @@ module ApplicationHelper
   def profile_path user
     "/profile?user=#{user.username}"
   end
-  
+
 end

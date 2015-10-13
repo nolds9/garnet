@@ -7,29 +7,27 @@ Observation.destroy_all
 Submission.destroy_all
 User.destroy_all
 
-groups = {
-  "ga": {
-    "wdi": {
-      "dc": {
-        "wdidc5": {
-          "classroom1": {
-          },
-          "classroom2": {
-          }
+ga_groups = {
+  "wdi": {
+    "dc": {
+      "wdidc5": {
+        "classroom1": {
         },
-        "wdidc6": {
-          "milk": {
-          },
-          "cookies": {
-          }
+        "classroom2": {
+        }
+      },
+      "wdidc6": {
+        "milk": {
         },
-        "wdidc7": {
-          "classroom1": {
-          },
-          "classroom3": {
-          },
-          "classroom4": {
-          }
+        "cookies": {
+        }
+      },
+      "wdidc7": {
+        "classroom1": {
+        },
+        "classroom3": {
+        },
+        "classroom4": {
         }
       }
     }
@@ -71,7 +69,8 @@ students7 = [
 ]
 
 
-Group.bulk_create(groups)
+ga = Group.create(title: "ga")
+ga.create_descendants(ga_groups, :title)
 
 Membership.bulk_create(instructors6, Group.named("wdidc6").id, true)
 Membership.bulk_create(students6, Group.named("wdidc6").id, false)
